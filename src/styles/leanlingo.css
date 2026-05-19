@@ -605,6 +605,42 @@ button {
     box-shadow: 0 4px 0 color-mix(in oklab, var(--surface-2) 55%, black);
     color: var(--text-2);
     border: 2px dashed var(--line);
+    filter: grayscale(0.6) opacity(0.55);
+}
+
+/* Earned trophy — gold gradient, glow, tappable, gently pulses to invite
+   the user to mash it for a confetti replay. */
+.kind-trophy-earned .ll-path-button-face {
+    width: 72px;
+    height: 72px;
+    background: linear-gradient(180deg, #ffe066 0%, var(--gold) 100%);
+    box-shadow:
+        0 4px 0 var(--gold-deep),
+        0 0 0 6px color-mix(in oklab, var(--gold) 25%, transparent),
+        0 0 32px color-mix(in oklab, var(--gold) 45%, transparent);
+    color: #5a3a00;
+    border: none;
+    animation: ll-trophy-pulse 1.8s ease-in-out infinite;
+}
+@keyframes ll-trophy-pulse {
+    0%, 100% {
+        box-shadow:
+            0 4px 0 var(--gold-deep),
+            0 0 0 6px color-mix(in oklab, var(--gold) 25%, transparent),
+            0 0 32px color-mix(in oklab, var(--gold) 45%, transparent);
+    }
+    50% {
+        box-shadow:
+            0 4px 0 var(--gold-deep),
+            0 0 0 10px color-mix(in oklab, var(--gold) 18%, transparent),
+            0 0 44px color-mix(in oklab, var(--gold) 60%, transparent);
+    }
+}
+.ll-path-node-row:has(.kind-trophy-earned) .ll-path-node-label-title {
+    color: var(--gold);
+}
+@media (prefers-reduced-motion: reduce) {
+    .kind-trophy-earned .ll-path-button-face { animation: none; }
 }
 
 .ll-path-node-label {

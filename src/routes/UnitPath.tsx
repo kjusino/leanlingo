@@ -17,7 +17,7 @@ import {
 import Confetti from '../components/Confetti';
 import type { Unit, World } from '../types';
 
-type NodeKind = 'done' | 'current' | 'available' | 'trophy';
+type NodeKind = 'done' | 'current' | 'available' | 'trophy' | 'trophy-earned';
 
 export default function UnitPath() {
     const { worldId = '', unitId = '' } = useParams();
@@ -70,20 +70,19 @@ export default function UnitPath() {
     // don't celebrate again on subsequent visits. Re-checked whenever
     // `completed` updates so that landing here straight from finishing the
     // last lesson still triggers the burst.
-    const [unitConfetti, setUnitConfetti] = useState(false);
+    const allDone =
+        unit.lessons.length > 0 &&
+        unit.lessons.every((l) => completed.has(l.id));
+    const doneCount = unit.lessons.filter((l) => completed.has(l.id)).length;
+    const remaining = unit.lessons.length - doneCount;
+
+    const [unitConfetti, setUnitConfetti] = useState(0);
     useEffect(() => {
-        if (unit.lessons.length === 0) return;
-        const allDone = unit.lessons.every((l) => completed.has(l.id));
         if (allDone && !isUnitCelebrated(unit.id)) {
             markUnitCelebrated(unit.id);
-            setUnitConfetti(true);
-            // Auto-clear the trigger so a re-render (e.g. theme toggle)
-            // doesn't re-fire — the Confetti component only fires when
-            // `fire` becomes truthy.
-            const t = window.setTimeout(() => setUnitConfetti(false), 3000);
-            return () => window.clearTimeout(t);
+            setUnitConfetti((n) => n + 1);
         }
-    }, [unit, completed]);
+    }, [unit, allDone]);
 
     return (
         <div
@@ -138,15 +137,28 @@ export default function UnitPath() {
                                 );
                             })}
 
-                            {/* End-of-unit trophy */}
+                            {/* End-of-unit trophy. Earned-when-complete:
+                                tapping it fires another confetti burst as a
+                                "replay" celebration. Until then it's a
+                                dimmed goal marker showing how many lessons
+                                stand between the user and the prize. */}
                             <PathNode
                                 index={unit.lessons.length}
                                 useZigzag={useZigzag}
-                                kind={'trophy'}
-                                label=""
-                                metaLabel=""
+                                kind={allDone ? 'trophy-earned' : 'trophy'}
+                                label={
+                                    allDone
+                                        ? 'Unit complete!'
+                                        : `${remaining} lesson${remaining === 1 ? '' : 's'} to go`
+                                }
+                                metaLabel={allDone ? 'tap to celebrate' : ''}
                                 badge="🏆"
-                                nonInteractive
+                                onClick={
+                                    allDone
+                                        ? () => setUnitConfetti((n) => n + 1)
+                                        : undefined
+                                }
+                                nonInteractive={!allDone}
                             />
                         </>
                     );
