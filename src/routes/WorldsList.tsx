@@ -23,7 +23,16 @@ export default function WorldsList() {
     return (
         <div className="ll-page">
             <header className="ll-home-header">
-                <div className="ll-home-wordmark">LeanLingo</div>
+                <h1 className="ll-home-wordmark" aria-label="LeanLingo">
+                    <span aria-hidden="true">L</span>
+                    <span aria-hidden="true" className="ll-glyph-quant">∃</span>
+                    <span aria-hidden="true" className="ll-glyph-quant">∀</span>
+                    <span aria-hidden="true">nLingo</span>
+                </h1>
+                <div className="ll-home-type">
+                    <span className="ll-mono-dim">:</span>{' '}
+                    <span className="ll-mono-accent">Lean 4 trainer</span>
+                </div>
                 <div className="ll-home-sub">
                     {worlds} chapters · {lessons} lessons · {questions} questions
                 </div>

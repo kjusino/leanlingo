@@ -82,13 +82,39 @@ button {
     padding: 18px 8px 22px;
 }
 .ll-home-wordmark {
-    font-size: 28px;
+    margin: 0;
+    font-size: 32px;
     font-weight: 800;
     letter-spacing: 0.4px;
+    line-height: 1.1;
     background: linear-gradient(90deg, #58cc02 0%, #22d3ee 60%, #c084fc 100%);
     -webkit-background-clip: text;
     background-clip: text;
     color: transparent;
+    /* Don't break between the quantifier glyphs and the rest of the word. */
+    white-space: nowrap;
+}
+/* ∃ / ∀ are math-symbol glyphs — many system fonts ship them at a
+   slightly smaller optical size than caps. Bump them up so the wordmark
+   reads as one even word. */
+.ll-glyph-quant {
+    display: inline-block;
+    font-size: 1.05em;
+    /* Tiny tracking so the substituted letters don't kiss their neighbours. */
+    margin: 0 0.01em;
+    transform: translateY(0.02em);
+}
+.ll-home-type {
+    margin-top: 6px;
+    font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', monospace;
+    font-size: 13px;
+    letter-spacing: 0.2px;
+}
+.ll-mono-dim {
+    color: var(--text-3);
+}
+.ll-mono-accent {
+    color: #67e8f9;
 }
 .ll-home-sub {
     margin-top: 6px;
