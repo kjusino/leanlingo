@@ -40,7 +40,7 @@ export default function QuestionCard({
 }: Props) {
     const [attempts, setAttempts] = useState(0);
     const [done, setDone] = useState(false);
-    const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
+    const [feedback, setFeedback] = useState<'correct' | 'wrong' | 'revealed' | null>(null);
     const [pendingOutcome, setPendingOutcome] = useState<Outcome | null>(null);
 
     function judge(correct: boolean) {
@@ -55,6 +55,15 @@ export default function QuestionCard({
                 xp: xpForAttempt(correct, next),
             });
         }
+    }
+
+    function reveal() {
+        if (done) return;
+        setFeedback('revealed');
+        setDone(true);
+        // Same accounting as a skip: not correct, 0 XP, breaks "perfect lesson"
+        // — the user explicitly chose to peek instead of attempting.
+        setPendingOutcome({ correct: false, attemptNumber: 0, xp: 0 });
     }
 
     return (
@@ -74,7 +83,11 @@ export default function QuestionCard({
                 <div className={`ll-feedback ${feedback}`}>
                     <div className="ll-feedback-head">
                         <span>
-                            {feedback === 'correct' ? '✓ Correct!' : '✗ Not quite.'}
+                            {feedback === 'correct'
+                                ? '✓ Correct!'
+                                : feedback === 'revealed'
+                                ? '👀 Answer revealed'
+                                : '✗ Not quite.'}
                         </span>
                         {done && pendingOutcome && pendingOutcome.xp > 0 && (
                             <span className="ll-xp-flash">+{pendingOutcome.xp} XP</span>
@@ -115,9 +128,18 @@ export default function QuestionCard({
                         Continue
                     </button>
                 ) : (
-                    <button className="ll-skip-btn" onClick={onSkip}>
-                        Skip
-                    </button>
+                    <>
+                        <button className="ll-skip-btn" onClick={onSkip}>
+                            Skip
+                        </button>
+                        <button
+                            className="ll-skip-btn ll-reveal-btn"
+                            onClick={reveal}
+                            title="Reveal the answer · no XP this question"
+                        >
+                            Show answer
+                        </button>
+                    </>
                 )}
             </div>
         </div>
@@ -133,7 +155,7 @@ function Body({
     question: Question;
     judge: (correct: boolean) => void;
     done: boolean;
-    feedback: 'correct' | 'wrong' | null;
+    feedback: 'correct' | 'wrong' | 'revealed' | null;
 }) {
     switch (question.type) {
         case 'MC':
@@ -158,7 +180,7 @@ function MC({
     question: Question;
     judge: (correct: boolean) => void;
     done: boolean;
-    feedback: 'correct' | 'wrong' | null;
+    feedback: 'correct' | 'wrong' | 'revealed' | null;
 }) {
     const [picked, setPicked] = useState<string | null>(null);
     const [wrongPicks, setWrongPicks] = useState<Set<string>>(new Set());

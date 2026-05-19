@@ -826,6 +826,17 @@ button {
     color: #fecaca;
     border: 1px solid color-mix(in oklab, var(--red) 50%, transparent);
 }
+/* Revealed-answer feedback — a neutral gold/cyan tone so the user
+   doesn't read it as "you got it wrong"; it's informational, not a
+   judgement. No XP was awarded for the question. */
+.ll-feedback.revealed {
+    background: color-mix(in oklab, var(--gold) 12%, transparent);
+    color: color-mix(in oklab, var(--gold) 65%, var(--text-1));
+    border: 1px solid color-mix(in oklab, var(--gold) 45%, transparent);
+}
+:root[data-theme='light'] .ll-feedback.revealed {
+    color: color-mix(in oklab, var(--gold-deep) 90%, black);
+}
 
 .ll-source {
     margin-top: 12px;
@@ -907,6 +918,18 @@ button {
 .ll-skip-btn:hover {
     background: var(--surface-2);
     color: var(--text-1);
+}
+
+/* "Show answer" — same shape as Skip, but a gold-tinted accent so it
+   reads as the learning option rather than a duplicate skip. */
+.ll-reveal-btn {
+    border-color: color-mix(in oklab, var(--gold) 35%, var(--line));
+    color: color-mix(in oklab, var(--gold) 60%, var(--text-2));
+}
+.ll-reveal-btn:hover {
+    background: color-mix(in oklab, var(--gold) 10%, var(--surface-2));
+    color: color-mix(in oklab, var(--gold) 80%, var(--text-1));
+    border-color: color-mix(in oklab, var(--gold) 55%, var(--line));
 }
 
 /* ============================================================
