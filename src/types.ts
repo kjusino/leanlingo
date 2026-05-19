@@ -44,3 +44,13 @@ export type WorldMeta = {
     title: string;
     blurb?: string;
 };
+
+export type Practice = {
+    id: string;             // e.g. "w1-practice"
+    world: string;          // e.g. "w1"
+    title: string;
+    prompt: string;
+    starterCode: string;
+    book_ref: string;
+    source_url: string;
+};

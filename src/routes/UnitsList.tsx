@@ -9,6 +9,7 @@ import {
 } from '../lib/tree';
 import { worldColor } from '../lib/worldColor';
 import { getCompletedLessons } from '../lib/progress';
+import { getPracticeForWorld } from '../lib/practice';
 import type { Unit } from '../types';
 
 export default function UnitsList() {
@@ -73,12 +74,51 @@ export default function UnitsList() {
                         completed={completed}
                     />
                 ))}
+                <PracticeRow worldId={world.id} completed={completed} />
             </div>
 
             <div className="ll-page-foot">
                 <Link to="/about" className="ll-text-link">About LeanLingo →</Link>
             </div>
         </div>
+    );
+}
+
+function PracticeRow({
+    worldId,
+    completed,
+}: {
+    worldId: string;
+    completed: Set<string>;
+}) {
+    const navigate = useNavigate();
+    const practice = getPracticeForWorld(worldId);
+    if (!practice) return null;
+    const done = completed.has(practice.id);
+
+    return (
+        <button
+            className={`ll-unit-row ll-practice-row ${done ? 'done' : ''}`}
+            onClick={() => navigate(`/w/${worldId}/practice`)}
+        >
+            <div className="ll-unit-row-body">
+                <div className="ll-unit-row-title">
+                    <span className="ll-practice-row-icon" aria-hidden="true">{'</>'}</span>
+                    Code in Lean 4
+                </div>
+                <div className="ll-unit-row-meta">
+                    {practice.book_ref} · optional · opens Lean Web Editor
+                </div>
+                <div className="ll-unit-row-preview">{practice.title}</div>
+            </div>
+            <div className="ll-unit-row-status">
+                {done ? (
+                    <span className="ll-check-circle">✓</span>
+                ) : (
+                    <span className="ll-chev">›</span>
+                )}
+            </div>
+        </button>
     );
 }
 
