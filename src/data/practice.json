@@ -42,9 +42,9 @@
   {
     "id": "w5-practice",
     "world": "w5",
-    "title": "Echo a single line of stdin",
-    "prompt": "Adapted from FPIL Ch. 2 (Hello, World!). This chapter has no formal Exercises section; the practice below mirrors the chapter's running examples (the `hello` and `feline` programs).\n\nWrite a program echo that reads one line from standard input, then prints it back with a trailing newline. Use IO.getStdin / IO.FS.Stream.getLine for input and IO.println for output.",
-    "starterCode": "def echo : IO Unit := do\n  let stdin ← IO.getStdin\n  let line ← stdin.getLine\n  sorry\n\n#eval echo  -- in the Lean editor, this will prompt for one line",
+    "title": "A greeting program",
+    "prompt": "Adapted from FPIL Ch. 2 (Hello, World!). This chapter has no formal Exercises section; the practice below mirrors the chapter's running `hello` example.\n\nWrite greet : String → IO Unit that prints \"Hello, <name>!\" with a string-interpolated greeting. Then write main : IO Unit that calls greet on a couple of names.\n\nTip: avoid IO.getStdin inside #eval — the Lean Web Editor can't supply input, so prefer programs that take their data as arguments rather than reading stdin.",
+    "starterCode": "def greet (name : String) : IO Unit :=\n  sorry\n\n#eval greet \"Lean\"   -- expect: Hello, Lean!\n\ndef main : IO Unit := do\n  greet \"Leonardo\"\n  greet \"Sebastian\"\n\n#eval main",
     "book_ref": "FPIL4 Ch. 2 (adapted)",
     "source_url": "https://lean-lang.org/functional_programming_in_lean/Hello___-World___/",
     "source_kind": "adapted"
@@ -142,9 +142,9 @@
   {
     "id": "w15-practice",
     "world": "w15",
-    "title": "Inhabited and decide on a small inductive",
-    "prompt": "Adapted from TPIL Ch. 10 (Type Classes). This chapter has no formal Exercises section; the practice below mirrors the chapter's worked examples on Inhabited and Decidable.\n\n1. Define a small inductive Color with red, green, blue.\n2. Give it an Inhabited instance picking your favourite default.\n3. Derive DecidableEq for it and use decide to evaluate a (Color = Color) check.",
-    "starterCode": "inductive Color where\n  | red\n  | green\n  | blue\nderiving Repr, DecidableEq\n\ninstance : Inhabited Color where\n  default := sorry\n\n#eval (default : Color)\n\nexample : (Color.red = Color.red) = True := by decide\nexample : (Color.red = Color.green) = False := by decide",
+    "title": "Decidable equality and Inhabited",
+    "prompt": "Adapted from TPIL Ch. 10 (Type Classes). This chapter has no formal Exercises section; the practice below mirrors the chapter's worked examples on Inhabited and DecidableEq.\n\n1. Define a small inductive Color with constructors red, green, blue.\n2. Give it an Inhabited instance picking a default.\n3. Derive DecidableEq for it, then use `decide` and `rfl` to check small equalities and disequalities.",
+    "starterCode": "inductive Color where\n  | red\n  | green\n  | blue\nderiving Repr, DecidableEq\n\ninstance : Inhabited Color where\n  default := sorry\n\n#eval (default : Color)\n\n-- decidable equality lets `decide` close these:\nexample : Color.red = Color.red := by decide\nexample : Color.red ≠ Color.green := by decide\n\n-- and lets you branch on equality in code:\ndef isRed (c : Color) : Bool :=\n  if c = Color.red then true else false\n\n#eval isRed Color.red    -- expect: true\n#eval isRed Color.blue   -- expect: false",
     "book_ref": "TPIL4 Ch. 10 (adapted)",
     "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Type-Classes/",
     "source_kind": "adapted"
@@ -152,9 +152,9 @@
   {
     "id": "w16-practice",
     "world": "w16",
-    "title": "Rewrite a subterm with conv",
-    "prompt": "Adapted from TPIL Ch. 11 (The Conversion Tactic). This chapter has no formal Exercises section; the practice below uses the same conv patterns the chapter demonstrates.\n\nUse conv to navigate into a subterm and rewrite it. The trick is to descend with conv_lhs / conv_rhs (or with conv in <pattern>) so that rw applies only inside the part you want to change.",
-    "starterCode": "example (a b c : Nat) (h : a = b) : c + a = c + b := by\n  conv_rhs => rw [← h]\n\nexample (f : Nat → Nat) (a b : Nat) (h : a = b) : f a + 1 = f b + 1 := by\n  sorry\n\nexample (a b : Nat) (h : a = b) : (fun x => x + a) 0 = b := by\n  sorry",
+    "title": "Rewriting inside with conv",
+    "prompt": "Adapted from TPIL Ch. 11 (The Conversion Tactic). This chapter has no formal Exercises section; the practice below uses the conv patterns the chapter demonstrates.\n\n`conv` lets you navigate into a subterm and rewrite *just that part*. The first example is given as a worked sample (no sorry) — read it, then fill in the next two.",
+    "starterCode": "-- Worked sample: rewrite just one occurrence of `a` in the goal.\nexample (a b c : Nat) (h : a = b) : a + c = b + c := by\n  conv_lhs => rw [h]\n\n-- Your turn: rewrite the argument to f under a function call.\nexample (f : Nat → Nat) (a b : Nat) (h : a = b) : f a + 1 = f b + 1 := by\n  sorry\n\n-- Your turn: rewrite under a lambda before applying it.\nexample (a b : Nat) (h : a = b) : (fun x => x + a) 0 = b := by\n  sorry",
     "book_ref": "TPIL4 Ch. 11 (adapted)",
     "source_url": "https://lean-lang.org/theorem_proving_in_lean4/The-Conversion-Tactic-Mode/",
     "source_kind": "adapted"

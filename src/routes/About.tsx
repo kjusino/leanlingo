@@ -58,10 +58,25 @@ export default function About() {
                 </ul>
                 <h2>How it works</h2>
                 <p>
-                    Every chapter, unit, and lesson is open. Jump anywhere, in any
-                    order. No accounts, no streaks, no tracking. This site stores
-                    nothing about you — completed lessons live only in your browser's
-                    local storage.
+                    Every chapter, unit, and lesson is open — jump anywhere, in any
+                    order. No accounts, no servers, no tracking. Your streak, XP, level,
+                    and completed lessons live only in your browser's <code>localStorage</code>;
+                    nothing leaves your device. Clearing site data resets everything.
+                </p>
+                <h2>Code in Lean 4</h2>
+                <p>
+                    Each chapter ends with an optional coding exercise. One tap copies
+                    the starter code; the next opens the official{' '}
+                    <a
+                        href="https://live.lean-lang.org"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                    >
+                        Lean Web Editor
+                    </a>{' '}
+                    — which runs the real Lean kernel as WebAssembly entirely client-side
+                    — where you paste and write your attempt against Lean's actual goal and
+                    error panels.
                 </p>
                 <h2>Open source</h2>
                 <p>

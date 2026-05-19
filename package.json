@@ -1,7 +1,7 @@
 {
   "name": "leanlingo",
   "private": true,
-  "version": "0.0.1",
+  "version": "0.1.0",
   "type": "module",
   "description": "Open Lean 4 trainer — flashcards from Theorem Proving in Lean 4 and Functional Programming in Lean.",
   "homepage": "https://leanlingo.org",
