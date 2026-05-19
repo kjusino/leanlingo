@@ -2,7 +2,18 @@ import { useState } from 'react';
 import LeanCode from './LeanCode';
 import type { Question } from '../types';
 
-export type Outcome = { correct: boolean; attemptNumber: number };
+export type Outcome = {
+    correct: boolean;
+    attemptNumber: number;
+    /** XP this question earned in isolation: 10 first-try, 5 retry, 0 otherwise. */
+    xp: number;
+};
+
+/** XP rules — kept in one place so they're easy to tune. */
+function xpForAttempt(correct: boolean, attemptNumber: number): number {
+    if (!correct) return 0;
+    return attemptNumber === 1 ? 10 : 5;
+}
 
 type Props = {
     question: Question;
@@ -38,7 +49,11 @@ export default function QuestionCard({
         setFeedback(correct ? 'correct' : 'wrong');
         if (correct || next >= 3) {
             setDone(true);
-            setPendingOutcome({ correct, attemptNumber: next });
+            setPendingOutcome({
+                correct,
+                attemptNumber: next,
+                xp: xpForAttempt(correct, next),
+            });
         }
     }
 
@@ -58,7 +73,12 @@ export default function QuestionCard({
             {feedback && (
                 <div className={`ll-feedback ${feedback}`}>
                     <div className="ll-feedback-head">
-                        {feedback === 'correct' ? '✓ Correct!' : '✗ Not quite.'}
+                        <span>
+                            {feedback === 'correct' ? '✓ Correct!' : '✗ Not quite.'}
+                        </span>
+                        {done && pendingOutcome && pendingOutcome.xp > 0 && (
+                            <span className="ll-xp-flash">+{pendingOutcome.xp} XP</span>
+                        )}
                     </div>
                     <div className="ll-feedback-body">{question.explanation}</div>
                 </div>

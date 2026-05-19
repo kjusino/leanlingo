@@ -1,7 +1,11 @@
 import { useNavigate, useParams } from 'react-router-dom';
 import LessonRunner from '../components/LessonRunner';
 import { findLesson, lessonNumber, unitNumber } from '../lib/tree';
-import { markLessonComplete } from '../lib/progress';
+import {
+    addXP,
+    bumpStreakForToday,
+    markLessonComplete,
+} from '../lib/progress';
 import { worldColor } from '../lib/worldColor';
 
 export default function LessonPage() {
@@ -61,8 +65,12 @@ export default function LessonPage() {
             <LessonRunner
                 key={lesson.id}
                 lesson={lesson}
-                onFinished={() => {
+                onFinished={(stats) => {
                     markLessonComplete(lesson.id);
+                    if (stats.xpEarned > 0) addXP(stats.xpEarned);
+                    // Streak bumps on any lesson finish, including replays —
+                    // it's a "you did something today" signal.
+                    bumpStreakForToday();
                     navigate(backToUnitPath);
                 }}
             />

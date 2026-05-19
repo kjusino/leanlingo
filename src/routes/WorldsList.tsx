@@ -3,6 +3,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { getTree, totalCounts, worldNumber } from '../lib/tree';
 import { worldColor } from '../lib/worldColor';
 import { getCompletedLessons } from '../lib/progress';
+import StatsCard from '../components/StatsCard';
 import type { World } from '../types';
 
 export default function WorldsList() {
@@ -37,6 +38,8 @@ export default function WorldsList() {
                     {worlds} chapters · {lessons} lessons · {questions} questions
                 </div>
             </header>
+
+            <StatsCard />
 
             <div className="ll-world-grid">
                 {tree.worlds.map((w) => (

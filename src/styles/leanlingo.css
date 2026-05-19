@@ -1058,3 +1058,155 @@ button {
    slides behind the toggle. */
 .ll-subheader { padding-right: 56px; }
 .ll-home-header { padding-top: 12px; }
+
+/* ============================================================
+   Stats card (home page) — streak / XP / level
+   ============================================================ */
+
+.ll-stats {
+    margin: 4px 0 18px;
+    padding: 14px 12px 12px;
+    background: var(--surface-1);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-card);
+}
+.ll-stats-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    align-items: stretch;
+}
+.ll-stat-cell {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 4px 6px;
+    border-radius: 12px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+}
+.ll-stat-cell-icon {
+    font-size: 22px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.25));
+}
+.ll-stat-cell-icon.streak { color: #ff7a18; }
+.ll-stat-cell-icon.xp { color: #fbbf24; }
+.ll-stat-cell-icon.level { color: var(--c); }
+.ll-stat-cell-value {
+    font-size: 20px;
+    font-weight: 900;
+    color: var(--text-1);
+    line-height: 1.1;
+    margin-top: 2px;
+}
+.ll-stat-cell-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--text-3);
+    font-weight: 700;
+}
+
+.ll-stats-progress {
+    margin-top: 12px;
+}
+.ll-stats-progress-bar {
+    height: 8px;
+    background: var(--surface-3);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.ll-stats-progress-fill {
+    height: 100%;
+    background: linear-gradient(
+        90deg,
+        #fbbf24 0%,
+        #f59e0b 50%,
+        #ef4444 100%
+    );
+    border-radius: 4px;
+    transition: width 0.35s ease;
+}
+.ll-stats-progress-label {
+    margin-top: 6px;
+    text-align: right;
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.2px;
+}
+
+/* ============================================================
+   Per-question XP flash + lesson-summary XP block
+   ============================================================ */
+
+.ll-feedback-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.ll-xp-flash {
+    display: inline-flex;
+    align-items: center;
+    background: linear-gradient(180deg, #fde68a 0%, #fbbf24 100%);
+    color: #422006;
+    font-weight: 900;
+    font-size: 12px;
+    letter-spacing: 0.4px;
+    padding: 4px 10px;
+    border-radius: 999px;
+    box-shadow: 0 2px 0 #a16207;
+    animation: ll-xp-pop 0.35s cubic-bezier(0.18, 1.2, 0.4, 1.05) both;
+}
+@keyframes ll-xp-pop {
+    0%   { transform: scale(0.5) translateY(-2px); opacity: 0; }
+    60%  { transform: scale(1.08); opacity: 1; }
+    100% { transform: scale(1); opacity: 1; }
+}
+
+.ll-summary-xp {
+    margin: 18px auto 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+.ll-summary-xp-amount {
+    font-size: 28px;
+    font-weight: 900;
+    background: linear-gradient(180deg, #fde68a 0%, #fbbf24 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    letter-spacing: 0.4px;
+}
+.ll-summary-xp-breakdown {
+    font-size: 11px;
+    color: var(--text-3);
+    letter-spacing: 0.3px;
+    text-transform: uppercase;
+    font-weight: 700;
+}
+.ll-summary-xp.replay {
+    font-size: 13px;
+    color: var(--text-3);
+    text-transform: uppercase;
+    letter-spacing: 0.6px;
+    font-weight: 700;
+}
+
+.ll-level-up {
+    margin: 4px auto 18px;
+    padding: 10px 14px;
+    background: color-mix(in oklab, var(--gold) 22%, var(--surface-2));
+    border: 1px solid color-mix(in oklab, var(--gold) 55%, var(--line));
+    border-radius: var(--radius-btn);
+    color: var(--text-1);
+    font-weight: 800;
+    font-size: 14px;
+    max-width: 320px;
+}

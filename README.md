@@ -4,11 +4,13 @@ Open Lean 4 flashcard trainer. Practice from the official Lean books anywhere �
 
 **Live at:** [leanlingo.org](https://leanlingo.org)
 
-- No accounts, no streaks, no tracking — every chapter is open, jump anywhere
+- No accounts, no servers, no tracking — every chapter is open, jump anywhere
+- Local-only streak, XP, and level progression (stored in your browser; nothing leaves your device)
 - 20 chapters, 67 units, 149 lessons, 405 questions
 - Drawn from [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) and [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/)
 - Pure static SPA — questions ship in the build, no backend, works offline after first load
 - Mobile-first three-screen navigation: chapter list → unit list → zig-zag lesson path → lesson runner
+- Light + dark themes, toggle in the top-right of any page
 
 ## Run locally
 
@@ -63,7 +65,22 @@ Each curriculum row in `questions.json` belongs to a `world` → `unit` → `les
 | `/w/:worldId/u/:unitId/l/:lessonId` | Lesson runner (one question at a time) |
 | `/about` | About + attribution |
 
-Completed lesson IDs are persisted to `localStorage` under `leanlingo:completed:lessons`. There is no server, no account, nothing to sign up for.
+Per-user progress is persisted to `localStorage` under three keys — `leanlingo:completed:lessons`, `leanlingo:xp`, and `leanlingo:streak`. There is no server, no account, nothing to sign up for. Clearing site data resets everything.
+
+**XP rules** (all numbers tunable in `src/components/LessonRunner.tsx`):
+
+| Event | XP |
+|---|---|
+| Correct answer, first try | +10 |
+| Correct answer, retry | +5 |
+| Wrong on every attempt or skipped | 0 |
+| Lesson completion (first time) | +25 |
+| Perfect lesson — every question correct first try, no skips | +50 |
+| Replay of an already-completed lesson | 0 |
+
+**Level curve**: `level = floor(sqrt(xp / 100)) + 1` — L2 at 100 XP, L3 at 400, L4 at 900, L10 at 8100.
+
+**Streak**: strict — any calendar-day gap resets to 1 on the next lesson completion. Same-day replays are idempotent.
 
 ## Project layout
 
