@@ -1,7 +1,6 @@
 import { useNavigate, useParams } from 'react-router-dom';
-import Header from '../components/Header';
 import LessonRunner from '../components/LessonRunner';
-import { findLesson, nextLesson } from '../lib/tree';
+import { findLesson, lessonNumber, unitNumber } from '../lib/tree';
 import { markLessonComplete } from '../lib/progress';
 import { worldColor } from '../lib/worldColor';
 
@@ -10,47 +9,66 @@ export default function LessonPage() {
     const navigate = useNavigate();
     const found = findLesson(worldId, unitId, lessonId);
 
-    const trailWithThisOpen = `/?w=${worldId}&u=${worldId}-${unitId}`;
+    const backToUnitPath = `/w/${worldId}/u/${unitId}`;
 
     if (!found) {
         return (
-            <div className="leanlingo">
-                <Header backTo={trailWithThisOpen} />
-                <div className="leanlingo-loading">Lesson not found.</div>
+            <div className="ll-page">
+                <header className="ll-subheader">
+                    <button
+                        className="ll-back-btn"
+                        onClick={() => navigate(backToUnitPath)}
+                        aria-label="back"
+                    >
+                        ←
+                    </button>
+                    <div className="ll-subheader-text">
+                        <div className="ll-subheader-eyebrow">Lesson</div>
+                        <div className="ll-subheader-title">Not found</div>
+                    </div>
+                    <div className="ll-subheader-spacer" />
+                </header>
+                <div className="ll-empty">That lesson doesn't exist.</div>
             </div>
         );
     }
 
-    const { lesson, world } = found;
-    const next = nextLesson(worldId, unitId, lessonId);
+    const { lesson, world, unit } = found;
     const c = worldColor(world.id);
 
     return (
         <div
-            className="leanlingo lesson-page"
-            style={{ ['--c' as string]: c.base, ['--c-soft' as string]: c.soft }}
+            className="ll-page ll-lesson-page"
+            style={{
+                ['--c' as string]: c.base,
+                ['--c-soft' as string]: c.soft,
+                ['--c-text' as string]: c.text,
+            }}
         >
-            <Header
-                bookTag={lesson.book_ref}
-                backTo={trailWithThisOpen}
-            />
+            <header className="ll-subheader accented">
+                <button
+                    className="ll-back-btn"
+                    onClick={() => navigate(backToUnitPath)}
+                    aria-label="back"
+                >
+                    ✕
+                </button>
+                <div className="ll-subheader-text">
+                    <div className="ll-subheader-eyebrow">
+                        Unit {unitNumber(unit.id)} · Lesson {lessonNumber(lesson.id)}
+                    </div>
+                    <div className="ll-subheader-title">{lesson.title}</div>
+                </div>
+                <div className="ll-subheader-bookref">{lesson.book_ref}</div>
+            </header>
+
             <LessonRunner
+                key={lesson.id}
                 lesson={lesson}
                 onFinished={() => {
                     markLessonComplete(lesson.id);
-                    navigate(trailWithThisOpen);
+                    navigate(backToUnitPath);
                 }}
-                onNextLesson={
-                    next
-                        ? () => {
-                              markLessonComplete(lesson.id);
-                              navigate(`/w/${next.worldId}/u/${next.unitId}/l/${next.lessonId}`);
-                          }
-                        : () => {
-                              markLessonComplete(lesson.id);
-                              navigate(trailWithThisOpen);
-                          }
-                }
             />
         </div>
     );

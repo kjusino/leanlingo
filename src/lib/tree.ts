@@ -78,6 +78,27 @@ export function findWorld(worldId: string): World | undefined {
     return getTree().worlds.find((w) => w.id === worldId);
 }
 
+export function findUnit(
+    worldId: string,
+    unitId: string
+): { world: World; unit: Unit } | undefined {
+    const w = findWorld(worldId);
+    if (!w) return;
+    const u = w.units.find((x) => x.id === `${worldId}-${unitId}`);
+    if (!u) return;
+    return { world: w, unit: u };
+}
+
+export function unitBookRef(unit: Unit): string {
+    return unit.lessons[0]?.book_ref ?? '';
+}
+
+export function unitQuestionCount(unit: Unit): number {
+    let n = 0;
+    for (const l of unit.lessons) n += l.questions.length;
+    return n;
+}
+
 export function findLesson(
     worldId: string,
     unitId: string,

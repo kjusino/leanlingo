@@ -9,6 +9,7 @@ type Props = {
     onAnswered: (o: Outcome) => void;
     onSkip: () => void;
     progressPct: number;
+    questionLabel: string;
 };
 
 function normalize(s: string): string {
@@ -19,7 +20,13 @@ function answersMatch(input: string, answer: string): boolean {
     return normalize(input) === normalize(answer);
 }
 
-export default function QuestionCard({ question, onAnswered, onSkip, progressPct }: Props) {
+export default function QuestionCard({
+    question,
+    onAnswered,
+    onSkip,
+    progressPct,
+    questionLabel,
+}: Props) {
     const [attempts, setAttempts] = useState(0);
     const [done, setDone] = useState(false);
     const [feedback, setFeedback] = useState<'correct' | 'wrong' | null>(null);
@@ -36,30 +43,38 @@ export default function QuestionCard({ question, onAnswered, onSkip, progressPct
     }
 
     return (
-        <div className="leanlingo-question">
-            <div className="leanlingo-progress-bar">
-                <div className="leanlingo-progress-fill" style={{ width: `${progressPct}%` }} />
+        <div className="ll-question">
+            <div className="ll-progress">
+                <div
+                    className="ll-progress-fill accented"
+                    style={{ width: `${progressPct}%` }}
+                />
             </div>
-            <p className="leanlingo-prompt">{question.prompt}</p>
+            <div className="ll-question-label">{questionLabel}</div>
+            <p className="ll-prompt">{question.prompt}</p>
             <LeanCode code={question.code} />
             <Body question={question} judge={judge} done={done} feedback={feedback} />
+
             {feedback && (
-                <div className={`leanlingo-feedback ${feedback}`}>
-                    {feedback === 'correct' ? '✓ Correct! ' : '✗ Not quite. '}
-                    {question.explanation}
+                <div className={`ll-feedback ${feedback}`}>
+                    <div className="ll-feedback-head">
+                        {feedback === 'correct' ? '✓ Correct!' : '✗ Not quite.'}
+                    </div>
+                    <div className="ll-feedback-body">{question.explanation}</div>
                 </div>
             )}
+
             {(feedback === 'wrong' || done) && (question.quote || question.source_url) && (
-                <div className="leanlingo-source">
+                <div className="ll-source">
                     {question.quote && (
-                        <blockquote className="leanlingo-source-quote">
+                        <blockquote className="ll-source-quote">
                             {question.quote}
-                            <cite className="leanlingo-source-cite">— {question.book_ref}</cite>
+                            <cite className="ll-source-cite">— {question.book_ref}</cite>
                         </blockquote>
                     )}
                     {question.source_url && (
                         <a
-                            className="leanlingo-source-link"
+                            className="ll-text-link"
                             href={question.source_url}
                             target="_blank"
                             rel="noopener noreferrer"
@@ -69,17 +84,18 @@ export default function QuestionCard({ question, onAnswered, onSkip, progressPct
                     )}
                 </div>
             )}
-            <div className="leanlingo-actions">
+
+            <div className="ll-question-actions">
                 {done && pendingOutcome ? (
                     <button
-                        className="leanlingo-btn"
+                        className="ll-cta-btn"
                         onClick={() => onAnswered(pendingOutcome)}
                         autoFocus
                     >
-                        Next →
+                        Continue
                     </button>
                 ) : (
-                    <button className="leanlingo-btn secondary" onClick={onSkip}>
+                    <button className="ll-skip-btn" onClick={onSkip}>
                         Skip
                     </button>
                 )}
@@ -139,9 +155,9 @@ function MC({
     }
 
     return (
-        <div className="leanlingo-options">
+        <div className="ll-options">
             {question.options.map((opt) => {
-                let cls = 'leanlingo-option';
+                let cls = 'll-option';
                 if (done && opt === question.answer) cls += ' correct';
                 else if (wrongPicks.has(opt)) cls += ' wrong';
                 else if (picked === opt && feedback === 'wrong') cls += ' wrong';
@@ -181,10 +197,12 @@ function TextInput({
     return (
         <div>
             <input
-                className="leanlingo-input"
+                className="ll-input"
                 value={done ? question.answer : value}
                 onChange={(e) => setValue(e.target.value)}
-                onKeyDown={(e) => { if (e.key === 'Enter') submit(); }}
+                onKeyDown={(e) => {
+                    if (e.key === 'Enter') submit();
+                }}
                 disabled={done}
                 placeholder="type your answer…"
                 autoFocus
@@ -192,8 +210,8 @@ function TextInput({
                 autoCapitalize="off"
                 autoComplete="off"
             />
-            <div className="leanlingo-actions">
-                <button className="leanlingo-btn" onClick={submit} disabled={done || !value.trim()}>
+            <div className="ll-question-actions">
+                <button className="ll-cta-btn" onClick={submit} disabled={done || !value.trim()}>
                     Check
                 </button>
             </div>
@@ -226,7 +244,8 @@ function Ordering({
 
     function submit() {
         if (done) return;
-        const correct = items.length === correctOrder.length &&
+        const correct =
+            items.length === correctOrder.length &&
             items.every((v, idx) => normalize(v) === normalize(correctOrder[idx]));
         if (!correct) setItems(question.ord_items.slice());
         judge(correct);
@@ -236,29 +255,33 @@ function Ordering({
 
     return (
         <div>
-            <div className="leanlingo-ord-list">
+            <div className="ll-ord-list">
                 {display.map((text, i) => (
-                    <div key={`${text}-${i}`} className="leanlingo-ord-item">
-                        <span className="leanlingo-ord-text">{text}</span>
-                        <div className="leanlingo-ord-controls">
+                    <div key={`${text}-${i}`} className="ll-ord-item">
+                        <span className="ll-ord-text">{text}</span>
+                        <div className="ll-ord-controls">
                             <button
-                                className="leanlingo-ord-arrow"
+                                className="ll-ord-arrow"
                                 disabled={done || i === 0}
                                 onClick={() => move(i, -1)}
                                 aria-label="move up"
-                            >↑</button>
+                            >
+                                ↑
+                            </button>
                             <button
-                                className="leanlingo-ord-arrow"
+                                className="ll-ord-arrow"
                                 disabled={done || i === display.length - 1}
                                 onClick={() => move(i, 1)}
                                 aria-label="move down"
-                            >↓</button>
+                            >
+                                ↓
+                            </button>
                         </div>
                     </div>
                 ))}
             </div>
-            <div className="leanlingo-actions">
-                <button className="leanlingo-btn" onClick={submit} disabled={done}>
+            <div className="ll-question-actions">
+                <button className="ll-cta-btn" onClick={submit} disabled={done}>
                     Check order
                 </button>
             </div>

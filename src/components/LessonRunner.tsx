@@ -5,23 +5,27 @@ import type { Lesson } from '../types';
 type Props = {
     lesson: Lesson;
     onFinished: () => void;
-    onNextLesson: (() => void) | null;
 };
 
-export default function LessonRunner({ lesson, onFinished, onNextLesson }: Props) {
+export default function LessonRunner({ lesson, onFinished }: Props) {
     const [idx, setIdx] = useState(0);
     const [summary, setSummary] = useState(false);
+    const [correctCount, setCorrectCount] = useState(0);
 
     const total = lesson.questions.length;
     const current = lesson.questions[idx];
-    const progressPct = useMemo(() => Math.round((idx / total) * 100), [idx, total]);
+    const progressPct = useMemo(
+        () => Math.round(((idx + (summary ? 1 : 0)) / total) * 100),
+        [idx, total, summary]
+    );
 
     function advance() {
         if (idx + 1 >= total) setSummary(true);
         else setIdx(idx + 1);
     }
 
-    function onAnswered(_o: Outcome) {
+    function onAnswered(o: Outcome) {
+        if (o.correct) setCorrectCount((n) => n + 1);
         advance();
     }
 
@@ -30,43 +34,42 @@ export default function LessonRunner({ lesson, onFinished, onNextLesson }: Props
     }
 
     if (!current) {
-        return (
-            <div className="leanlingo-loading">
-                This lesson is empty.
-            </div>
-        );
+        return <div className="ll-empty">This lesson is empty.</div>;
     }
 
     if (summary) {
+        const accuracy = total === 0 ? 0 : Math.round((correctCount / total) * 100);
         return (
-            <div className="leanlingo-summary">
-                <div className="leanlingo-h2">{lesson.title}</div>
-                <div className="leanlingo-sub">complete · {lesson.book_ref}</div>
-                <div className="leanlingo-summary-check">✓</div>
-                <div className="leanlingo-actions" style={{ marginTop: 24, flexDirection: 'column' }}>
-                    {onNextLesson && (
-                        <button className="leanlingo-btn" onClick={onNextLesson} autoFocus>
-                            Next lesson →
-                        </button>
-                    )}
-                    <button className="leanlingo-btn secondary" onClick={onFinished}>
-                        Back to trail
-                    </button>
+            <div className="ll-summary">
+                <div className="ll-summary-burst">🏆</div>
+                <div className="ll-summary-title">Lesson complete</div>
+                <div className="ll-summary-sub">{lesson.title}</div>
+                <div className="ll-summary-stats">
+                    <div className="ll-stat">
+                        <div className="ll-stat-num">{correctCount}/{total}</div>
+                        <div className="ll-stat-label">Correct</div>
+                    </div>
+                    <div className="ll-stat">
+                        <div className="ll-stat-num">{accuracy}%</div>
+                        <div className="ll-stat-label">Accuracy</div>
+                    </div>
                 </div>
+                <button className="ll-cta-btn" onClick={onFinished} autoFocus>
+                    Continue
+                </button>
             </div>
         );
     }
 
     return (
-        <div>
-            <div className="leanlingo-h2">{lesson.title}</div>
-            <div className="leanlingo-sub">{lesson.book_ref} · question {idx + 1} of {total}</div>
+        <div className="ll-runner">
             <QuestionCard
                 key={current.id}
                 question={current}
                 onAnswered={onAnswered}
                 onSkip={onSkip}
                 progressPct={progressPct}
+                questionLabel={`Question ${idx + 1} of ${total}`}
             />
         </div>
     );
