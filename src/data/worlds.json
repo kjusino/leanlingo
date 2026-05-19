@@ -1,0 +1,15 @@
+[
+  { "id": "w1",  "title": "Expressions, Types & Functions",      "blurb": "Getting comfortable with Lean's syntax and core building blocks." },
+  { "id": "w2",  "title": "Dependent Type Theory",                "blurb": "The foundation Lean is built on." },
+  { "id": "w3",  "title": "Structures, Datatypes & Patterns",     "blurb": "Define your own data and take it apart." },
+  { "id": "w4",  "title": "Propositions and Proofs",              "blurb": "Propositions as types — the Curry–Howard view." },
+  { "id": "w5",  "title": "Hello, World!",                        "blurb": "From pure expressions to programs with effects." },
+  { "id": "w6",  "title": "Quantifiers and Equality",             "blurb": "Forall, exists, and the meaning of equality." },
+  { "id": "w7",  "title": "Tactics",                              "blurb": "Building proofs by manipulating goals." },
+  { "id": "w8",  "title": "Type Classes",                         "blurb": "Overloading and ad-hoc polymorphism." },
+  { "id": "w9",  "title": "Interacting with Lean",                "blurb": "Commands, elaboration, and the editor loop." },
+  { "id": "w10", "title": "Monads",                               "blurb": "Sequencing effects with do-notation." },
+  { "id": "w11", "title": "Inductive Types",                      "blurb": "Defining data, induction principles, recursors." },
+  { "id": "w12", "title": "Functors, Applicatives & Monads",      "blurb": "Three layers of structure for effectful code." },
+  { "id": "w13", "title": "Induction & Recursion",                "blurb": "Proving by induction and writing recursive definitions." }
+]

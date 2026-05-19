@@ -1,0 +1,1 @@
+{"root":["./src/app.tsx","./src/main.tsx","./src/types.ts","./src/components/header.tsx","./src/components/leancode.tsx","./src/components/lessonrunner.tsx","./src/components/questioncard.tsx","./src/lib/tree.ts","./src/routes/about.tsx","./src/routes/chapterindex.tsx","./src/routes/lessonpage.tsx","./src/routes/worldpage.tsx"],"version":"5.9.3"}
