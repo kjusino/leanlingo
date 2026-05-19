@@ -17,6 +17,7 @@ type Question = {
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FILE = path.join(__dirname, '..', 'src', 'data', 'questions.json');
+const PRACTICE_FILE = path.join(__dirname, '..', 'src', 'data', 'practice.json');
 
 const rows = JSON.parse(fs.readFileSync(FILE, 'utf8')) as Question[];
 
@@ -68,9 +69,68 @@ for (const q of rows) {
     }
 }
 
-console.log(`audit: ${rows.length} questions`);
+// ── Practice exercises ───────────────────────────────────────────────
+// Each practice card links the user out to the Lean books. The book's
+// real URL scheme is /Title-Case-With-Hyphens/ (no .html, trailing slash).
+// We've been bitten by guessed URLs once already — guard against it by
+// requiring every practice source_url to ALSO appear in questions.json,
+// where the URLs have been verified to actually resolve.
+
+type Practice = {
+    id: string;
+    world: string;
+    title: string;
+    prompt: string;
+    starterCode: string;
+    book_ref: string;
+    source_url: string;
+};
+
+const practice = JSON.parse(fs.readFileSync(PRACTICE_FILE, 'utf8')) as Practice[];
+const knownGoodUrls = new Set(
+    rows.map((q) => (q as unknown as { source_url?: string }).source_url).filter(Boolean) as string[]
+);
+
+const requiredKeys: (keyof Practice)[] = [
+    'id', 'world', 'title', 'prompt', 'starterCode', 'book_ref', 'source_url',
+];
+const seenIds = new Set<string>();
+const seenWorlds = new Set<string>();
+
+for (const p of practice) {
+    for (const k of requiredKeys) {
+        if (!p[k] || (typeof p[k] === 'string' && !(p[k] as string).trim())) {
+            flags.push(`practice ${p.id ?? '<no id>'}: missing or empty "${k}"`);
+        }
+    }
+    if (p.id) {
+        if (seenIds.has(p.id)) flags.push(`practice ${p.id}: duplicate id`);
+        seenIds.add(p.id);
+    }
+    if (p.world) {
+        if (seenWorlds.has(p.world)) {
+            flags.push(`practice ${p.id}: duplicate world "${p.world}" (one practice per world)`);
+        }
+        seenWorlds.add(p.world);
+    }
+    if (p.source_url && !knownGoodUrls.has(p.source_url)) {
+        flags.push(
+            `practice ${p.id}: source_url not found in questions.json — ` +
+            `risk of 404. Match an existing question's URL for this section, or ` +
+            `add a question referencing this URL first. (${p.source_url})`
+        );
+    }
+    if (p.starterCode && !p.starterCode.includes('sorry')) {
+        // Not a hard fail — but warn so authors get a `sorry` placeholder.
+        flags.push(
+            `practice ${p.id}: starterCode has no \`sorry\` — exercise should leave a hole for the user.`
+        );
+    }
+}
+
+console.log(`audit: ${rows.length} questions, ${practice.length} practice exercises`);
 if (flags.length === 0) {
-    console.log('audit: ✓ all questions renderable + answerable');
+    console.log('audit: ✓ all questions + practice entries pass');
     process.exit(0);
 }
 console.error(`audit: ✗ ${flags.length} issues`);

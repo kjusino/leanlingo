@@ -5,8 +5,8 @@
     "title": "joinStringsWith and volume",
     "prompt": "Two short exercises from FPIL §1.3:\n\n1. Define joinStringsWith with type String → String → String → String. The first argument is a separator placed between the next two. Example: joinStringsWith \", \" \"one\" \"two\" should produce \"one, two\".\n\n2. Define volume : Nat → Nat → Nat → Nat returning the volume of a rectangular prism given its height, width, and depth.",
     "starterCode": "-- 1. joinStringsWith\ndef joinStringsWith (sep s1 s2 : String) : String :=\n  sorry\n\n#eval joinStringsWith \", \" \"one\" \"two\"   -- expect: \"one, two\"\n#check joinStringsWith \", \"               -- expect: String → String → String\n\n-- 2. volume\ndef volume (h w d : Nat) : Nat :=\n  sorry\n\n#eval volume 2 3 4   -- expect: 24",
-    "book_ref": "FPIL §1.3",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/getting-to-know/conveniences.html"
+    "book_ref": "FPIL4 §1.3",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Getting-to-Know-Lean/Functions-and-Definitions/"
   },
   {
     "id": "w2-practice",
@@ -14,8 +14,8 @@
     "title": "Dependent function types",
     "prompt": "Explore Lean's dependent type theory by experimenting with universes and dependent function types.\n\n1. Use #check on Type, Type 0, Type 1, and Prop. Convince yourself how the universe hierarchy stacks up.\n\n2. Write a polymorphic identity id' : (α : Type) → α → α and test it on different argument types.",
     "starterCode": "#check Type        -- Type 1\n#check Type 0      -- Type 1\n#check Type 1      -- Type 2\n#check Prop        -- Type\n\ndef id' : (α : Type) → α → α :=\n  sorry\n\n#eval id' Nat 5\n#eval id' String \"lean\"",
-    "book_ref": "TPIL Ch. 2",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/dependent_type_theory.html"
+    "book_ref": "TPIL4 Ch. 2",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Dependent-Type-Theory/"
   },
   {
     "id": "w3-practice",
@@ -23,8 +23,8 @@
     "title": "A Point structure and a Sum",
     "prompt": "Two exercises from FPIL §1.5–§1.6:\n\n1. Define a Point structure with two Float fields x and y, then write addPoints : Point → Point → Point that adds them componentwise.\n\n2. Define an inductive type Sign with values pos, neg, and zero, then write signOfInt : Int → Sign.",
     "starterCode": "structure Point where\n  x : Float\n  y : Float\nderiving Repr\n\ndef addPoints (a b : Point) : Point :=\n  sorry\n\n#eval addPoints ⟨1.0, 2.0⟩ ⟨3.0, 4.0⟩\n\ninductive Sign where\n  | pos\n  | neg\n  | zero\nderiving Repr\n\ndef signOfInt (n : Int) : Sign :=\n  sorry\n\n#eval signOfInt 7      -- expect: Sign.pos\n#eval signOfInt 0      -- expect: Sign.zero\n#eval signOfInt (-3)   -- expect: Sign.neg",
-    "book_ref": "FPIL §1.5–§1.6",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/getting-to-know/structures.html"
+    "book_ref": "FPIL4 §1.4–§1.5",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Getting-to-Know-Lean/Structures/"
   },
   {
     "id": "w4-practice",
@@ -32,8 +32,8 @@
     "title": "Commutativity of and",
     "prompt": "Prove that conjunction is commutative without using tactics — write a term-style proof.\n\nGiven any propositions p and q, an Iff (↔) is just a pair of implications. Build it with ⟨_, _⟩ and use And.intro / And.left / And.right (or the anonymous-constructor syntax) on each side.",
     "starterCode": "theorem and_comm' (p q : Prop) : p ∧ q ↔ q ∧ p := by\n  sorry\n\n-- Or, term-mode (no `by`):\nexample (p q : Prop) : p ∧ q ↔ q ∧ p :=\n  sorry",
-    "book_ref": "TPIL Ch. 3",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/propositions_and_proofs.html"
+    "book_ref": "TPIL4 Ch. 3",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Propositions-and-Proofs/"
   },
   {
     "id": "w5-practice",
@@ -41,8 +41,8 @@
     "title": "A greeting program",
     "prompt": "Write a small IO program that asks the user for their name and prints a greeting.\n\nUse IO.println for output and (← IO.getStdin >>= IO.FS.Stream.getLine) or the simpler IO.println / do-notation idioms from FPIL Ch. 2.",
     "starterCode": "def main : IO Unit := do\n  IO.println \"What's your name?\"\n  let stdin ← IO.getStdin\n  let name ← stdin.getLine\n  IO.println s!\"Hello, {name.trim}!\"\n\n-- Or a no-input variant:\ndef hello : IO Unit :=\n  sorry\n\n#eval hello",
-    "book_ref": "FPIL Ch. 2",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/hello-world.html"
+    "book_ref": "FPIL4 Ch. 2",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Hello___-World___/"
   },
   {
     "id": "w6-practice",
@@ -50,8 +50,8 @@
     "title": "Quantifier swap",
     "prompt": "Two short proofs about quantifiers:\n\n1. ∀ x, p x → ∀ y, p y (when y stands for the same kind of thing — easier than it looks).\n\n2. (∃ x, p x ∧ q x) → (∃ x, p x) ∧ (∃ x, q x).\n\nTry both in tactic mode using intro, obtain, exact, and apply.",
     "starterCode": "variable (α : Type) (p q : α → Prop)\n\nexample : (∀ x, p x) → ∀ y, p y := by\n  sorry\n\nexample : (∃ x, p x ∧ q x) → (∃ x, p x) ∧ (∃ x, q x) := by\n  sorry",
-    "book_ref": "TPIL Ch. 4",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/quantifiers_and_equality.html"
+    "book_ref": "TPIL4 Ch. 4",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Quantifiers-and-Equality/"
   },
   {
     "id": "w7-practice",
@@ -59,8 +59,8 @@
     "title": "Tactic-mode and / or",
     "prompt": "Re-prove the commutativity of ∧, then prove the commutativity of ∨, using only tactic mode.\n\nUseful tactics: intro, constructor, exact, apply, cases / rcases, left, right.",
     "starterCode": "example (p q : Prop) : p ∧ q ↔ q ∧ p := by\n  sorry\n\nexample (p q : Prop) : p ∨ q ↔ q ∨ p := by\n  sorry",
-    "book_ref": "TPIL Ch. 5",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/tactics.html"
+    "book_ref": "TPIL4 Ch. 5",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Tactics/"
   },
   {
     "id": "w8-practice",
@@ -68,8 +68,8 @@
     "title": "A ToString instance",
     "prompt": "Define a Point structure with two Float fields and write a ToString instance for it so that #eval (toString p) gives a readable rendering like \"(1.0, 2.0)\".",
     "starterCode": "structure Point where\n  x : Float\n  y : Float\n\ninstance : ToString Point where\n  toString p := sorry\n\n#eval toString ({ x := 1.0, y := 2.0 } : Point)\n-- expect something like: (1.0, 2.0)",
-    "book_ref": "TPIL Ch. 10 / FPIL Ch. 4",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/type-classes.html"
+    "book_ref": "FPIL4 §4.3 / TPIL4 Ch. 10",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Overloading-and-Type-Classes/"
   },
   {
     "id": "w9-practice",
@@ -77,8 +77,8 @@
     "title": "Inspect with #check, #eval, #print",
     "prompt": "Use Lean's introspection commands to look at a small definition.\n\n1. Define add1 : Nat → Nat that adds one to its input.\n2. Use #check add1 and #check @add1 — note the difference.\n3. Use #eval add1 41.\n4. Use #print add1 to see its body.",
     "starterCode": "def add1 (n : Nat) : Nat :=\n  sorry\n\n#check add1\n#check @add1\n#eval add1 41    -- expect: 42\n#print add1",
-    "book_ref": "TPIL Ch. 6",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/interacting_with_lean.html"
+    "book_ref": "TPIL4 Ch. 6",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Interacting-with-Lean/"
   },
   {
     "id": "w10-practice",
@@ -86,8 +86,8 @@
     "title": "Maybe as a Monad",
     "prompt": "Re-implement Option (call it Maybe) and make it a Monad. You'll need pure (a.k.a. some) and bind. Then use do-notation over your Maybe to compose two operations that may fail.",
     "starterCode": "inductive Maybe (α : Type) where\n  | none\n  | some (a : α)\nderiving Repr\n\ninstance : Monad Maybe where\n  pure a := sorry\n  bind ma f := sorry\n\ndef safeDiv (a b : Int) : Maybe Int :=\n  if b == 0 then Maybe.none else Maybe.some (a / b)\n\ndef example' : Maybe Int := do\n  let x ← safeDiv 10 2\n  let y ← safeDiv x 0\n  pure y\n\n#eval example'   -- expect: Maybe.none",
-    "book_ref": "FPIL Ch. 5",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/monads.html"
+    "book_ref": "FPIL4 Ch. 5",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Monads/"
   },
   {
     "id": "w11-practice",
@@ -95,8 +95,8 @@
     "title": "Define Nat and add",
     "prompt": "Define your own inductive Nat with zero and succ, then implement addition by recursion on the second argument. Test with a few small examples.",
     "starterCode": "namespace MyNat\n\ninductive Nat where\n  | zero\n  | succ (n : Nat)\nderiving Repr\n\ndef add (m : Nat) : Nat → Nat\n  | .zero   => sorry\n  | .succ n => sorry\n\n#eval add (.succ .zero) (.succ (.succ .zero))\n-- expect: MyNat.Nat.succ (MyNat.Nat.succ (MyNat.Nat.succ MyNat.Nat.zero))\n\nend MyNat",
-    "book_ref": "TPIL Ch. 7",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/inductive_types.html"
+    "book_ref": "TPIL4 Ch. 7",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Inductive-Types/"
   },
   {
     "id": "w12-practice",
@@ -104,8 +104,8 @@
     "title": "Functor for a binary Tree",
     "prompt": "Define a binary tree type Tree α with leaf and node constructors, then give it a Functor instance. Test by mapping a function over a small tree.",
     "starterCode": "inductive Tree (α : Type) where\n  | leaf\n  | node (l : Tree α) (a : α) (r : Tree α)\nderiving Repr\n\ninstance : Functor Tree where\n  map f t := sorry\n\ndef sample : Tree Nat :=\n  .node (.node .leaf 1 .leaf) 2 (.node .leaf 3 .leaf)\n\n#eval (fun n => n * 10) <$> sample\n-- expect each node value multiplied by 10",
-    "book_ref": "FPIL Ch. 4",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/functor-applicative-monad.html"
+    "book_ref": "FPIL4 Ch. 6",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Functors___-Applicative-Functors___-and-Monads/"
   },
   {
     "id": "w13-practice",
@@ -113,8 +113,8 @@
     "title": "Factorial with termination_by",
     "prompt": "Define factorial in a way that Lean can prove terminating. For a direct recursive definition on Nat, Lean accepts it automatically; for a definition that recurses on a non-obvious measure, add termination_by.\n\nWrite two versions: a structural one and one using termination_by to be explicit.",
     "starterCode": "def fact : Nat → Nat\n  | 0     => sorry\n  | n + 1 => sorry\n\n#eval fact 5   -- expect: 120\n\n-- Explicit termination measure\ndef factWF : Nat → Nat\n  | 0     => 1\n  | n + 1 => (n + 1) * factWF n\ntermination_by n => n\n\n#eval factWF 6   -- expect: 720",
-    "book_ref": "TPIL Ch. 8",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/induction_and_recursion.html"
+    "book_ref": "TPIL4 Ch. 8",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Induction-and-Recursion/"
   },
   {
     "id": "w14-practice",
@@ -122,8 +122,8 @@
     "title": "Point extended to Point3D",
     "prompt": "Define a Point structure with x and y, then a Point3D that extends Point with an additional z field. Write a function that lifts a Point into 3D at z = 0.",
     "starterCode": "structure Point where\n  x : Float\n  y : Float\nderiving Repr\n\nstructure Point3D extends Point where\n  z : Float\nderiving Repr\n\ndef lift (p : Point) : Point3D :=\n  sorry\n\n#eval lift { x := 1.0, y := 2.0 }\n-- expect a Point3D with z = 0.0",
-    "book_ref": "TPIL Ch. 9",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/structures_and_records.html"
+    "book_ref": "TPIL4 Ch. 9",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Structures-and-Records/"
   },
   {
     "id": "w15-practice",
@@ -131,8 +131,8 @@
     "title": "Decidable equality on Sign",
     "prompt": "Define an inductive Sign type and write a DecidableEq instance for it. Then use decide to check equality between two values.",
     "starterCode": "inductive Sign where\n  | pos\n  | neg\n  | zero\nderiving Repr, DecidableEq  -- ← `deriving DecidableEq` does it for you\n\nexample : (Sign.pos = Sign.pos) = True := by decide\nexample : (Sign.pos = Sign.neg) = False := by decide\n\n-- Now write the instance by hand for practice:\ninstance : DecidableEq Sign := fun a b =>\n  sorry",
-    "book_ref": "TPIL Ch. 10",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/type_classes.html"
+    "book_ref": "TPIL4 Ch. 10",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Type-Classes/"
   },
   {
     "id": "w16-practice",
@@ -140,8 +140,8 @@
     "title": "Rewriting inside with conv",
     "prompt": "Use the conv tactic to rewrite a subterm in place. Given f (g x), descend with conv to the g x subterm and rewrite it using a hypothesis.",
     "starterCode": "example (a b c : Nat) (h : a = b) : c + a = c + b := by\n  conv_rhs => rw [← h]\n\nexample (f : Nat → Nat) (a b : Nat) (h : a = b) : f a + 1 = f b + 1 := by\n  sorry",
-    "book_ref": "TPIL Ch. 11",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/conv.html"
+    "book_ref": "TPIL4 Ch. 11",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/The-Conversion-Tactic-Mode/"
   },
   {
     "id": "w17-practice",
@@ -149,17 +149,17 @@
     "title": "funext in action",
     "prompt": "Use funext to prove two functions equal by showing they agree pointwise. Then briefly inspect what's happening with #check funext.",
     "starterCode": "#check @funext\n\nexample : (fun x : Nat => x + 0) = (fun x => x) := by\n  funext x\n  sorry",
-    "book_ref": "TPIL Ch. 12",
-    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/axioms_and_computation.html"
+    "book_ref": "TPIL4 Ch. 12",
+    "source_url": "https://lean-lang.org/theorem_proving_in_lean4/Axioms-and-Computation/"
   },
   {
     "id": "w18-practice",
     "world": "w18",
     "title": "StateT over Except",
     "prompt": "Stack StateT on top of Except to build an effect that carries state and may throw.\n\nWrite a small computation in StateT Nat (Except String) Unit that increments the state, then throws if the state exceeds some bound.",
-    "starterCode": "def step (bound : Nat) : StateT Nat (Except String) Unit := do\n  modify (· + 1)\n  let s ← get\n  if s > bound then\n    throw s!\"overflowed bound {bound} at {s}\"\n  else\n    pure ()\n\ndef program : StateT Nat (Except String) Unit := do\n  step 5\n  step 5\n  step 5\n\n#eval program.run 4    -- expect: Except.error \"...\"\n#eval program.run 0    -- expect: Except.ok ((), 3)",
-    "book_ref": "FPIL Ch. 5",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/monad-transformers.html"
+    "starterCode": "-- Define `step` so that it:\n--   1. increments the state by 1\n--   2. throws an error if the new state exceeds `bound`\n-- using both the State and Except effects via do-notation.\ndef step (bound : Nat) : StateT Nat (Except String) Unit :=\n  sorry\n\ndef program : StateT Nat (Except String) Unit := do\n  step 5\n  step 5\n  step 5\n\n#eval program.run 4    -- expect: Except.error \"...\"\n#eval program.run 0    -- expect: Except.ok ((), 3)",
+    "book_ref": "FPIL4 Ch. 6 (Monad Transformers)",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Monad-Transformers/"
   },
   {
     "id": "w19-practice",
@@ -167,8 +167,8 @@
     "title": "Safe indexing with Fin",
     "prompt": "Use Fin to write a safe-by-construction lookup over a small List. Write get? : (xs : List α) → Fin xs.length → α — it should compile without any bounds-check failure because the index is statically constrained.",
     "starterCode": "def get? : (xs : List α) → Fin xs.length → α\n  | x :: _,  ⟨0, _⟩      => sorry\n  | _ :: xs, ⟨n + 1, h⟩  => sorry\n\n#eval get? [10, 20, 30] ⟨0, by decide⟩   -- expect: 10\n#eval get? [10, 20, 30] ⟨2, by decide⟩   -- expect: 30",
-    "book_ref": "FPIL Ch. 8",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/dependent-types.html"
+    "book_ref": "FPIL4 Ch. 7",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Programming-with-Dependent-Types/"
   },
   {
     "id": "w20-practice",
@@ -176,7 +176,7 @@
     "title": "Tail-recursive sum",
     "prompt": "Write two versions of List sum:\n\n1. sumDirect using direct recursion (not tail-recursive).\n2. sumTail using an accumulator so the recursive call is in tail position.\n\nVerify they agree on a small list, then check #eval doesn't stack-overflow on a long input.",
     "starterCode": "def sumDirect : List Nat → Nat\n  | []      => 0\n  | x :: xs => x + sumDirect xs\n\ndef sumTail (xs : List Nat) : Nat :=\n  let rec go : List Nat → Nat → Nat\n    | [],      acc => sorry\n    | x :: xs, acc => sorry\n  go xs 0\n\n#eval sumDirect [1, 2, 3, 4, 5]   -- expect: 15\n#eval sumTail   [1, 2, 3, 4, 5]   -- expect: 15\n#eval sumTail (List.range 10000)   -- should compute without overflow",
-    "book_ref": "FPIL Ch. 4 / TPIL Ch. 8",
-    "source_url": "https://lean-lang.org/functional_programming_in_lean/programs-proofs.html"
+    "book_ref": "FPIL4 Ch. 8",
+    "source_url": "https://lean-lang.org/functional_programming_in_lean/Programming-Proving-and-Performance/"
   }
 ]
