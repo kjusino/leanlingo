@@ -114,7 +114,21 @@ export default function PracticePage() {
             </header>
 
             <div className="ll-practice-intro">
-                <span className="ll-practice-pill">CODE IN LEAN 4</span>
+                <div className="ll-practice-pill-row">
+                    <span className="ll-practice-pill">CODE IN LEAN 4</span>
+                    <span
+                        className={`ll-practice-pill provenance ${practice.source_kind}`}
+                        title={
+                            practice.source_kind === 'book_exercise'
+                                ? 'Verbatim or near-verbatim from the book’s Exercises section'
+                                : 'This chapter has no formal Exercises section — practice mirrors the chapter’s worked examples'
+                        }
+                    >
+                        {practice.source_kind === 'book_exercise'
+                            ? 'FROM THE BOOK'
+                            : 'ADAPTED'}
+                    </span>
+                </div>
                 <p className="ll-practice-prompt">{practice.prompt}</p>
             </div>
 

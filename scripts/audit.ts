@@ -76,6 +76,7 @@ for (const q of rows) {
 // requiring every practice source_url to ALSO appear in questions.json,
 // where the URLs have been verified to actually resolve.
 
+type SourceKind = 'book_exercise' | 'adapted';
 type Practice = {
     id: string;
     world: string;
@@ -84,6 +85,18 @@ type Practice = {
     starterCode: string;
     book_ref: string;
     source_url: string;
+    /**
+     * Forces the author to declare provenance explicitly.
+     *   "book_exercise" — verbatim or near-verbatim from the book's Exercises section.
+     *                     Prompt SHOULD say "From the exercises in …".
+     *   "adapted"       — the chapter has no formal Exercises section; the practice is
+     *                     written to mirror the chapter's worked examples.
+     *                     Prompt SHOULD say "Adapted from …".
+     * History: an earlier seed of this file claimed everything was "from the book"
+     * but most of it was fabricated. The audit now refuses to ship without this
+     * declaration, so the next author has to consciously pick one.
+     */
+    source_kind: SourceKind;
 };
 
 const practice = JSON.parse(fs.readFileSync(PRACTICE_FILE, 'utf8')) as Practice[];
@@ -92,8 +105,9 @@ const knownGoodUrls = new Set(
 );
 
 const requiredKeys: (keyof Practice)[] = [
-    'id', 'world', 'title', 'prompt', 'starterCode', 'book_ref', 'source_url',
+    'id', 'world', 'title', 'prompt', 'starterCode', 'book_ref', 'source_url', 'source_kind',
 ];
+const validSourceKinds: SourceKind[] = ['book_exercise', 'adapted'];
 const seenIds = new Set<string>();
 const seenWorlds = new Set<string>();
 
@@ -120,8 +134,26 @@ for (const p of practice) {
             `add a question referencing this URL first. (${p.source_url})`
         );
     }
+    if (p.source_kind && !validSourceKinds.includes(p.source_kind)) {
+        flags.push(
+            `practice ${p.id}: source_kind="${p.source_kind}" — must be one of ${validSourceKinds.join(', ')}`
+        );
+    }
+    // Consistency between source_kind and the prompt's prose. Soft check —
+    // wording can drift — but the canonical phrasings catch sloppy edits.
+    if (p.source_kind === 'book_exercise' && p.prompt && !/from the exercises?/i.test(p.prompt)) {
+        flags.push(
+            `practice ${p.id}: source_kind="book_exercise" but prompt doesn't start with "From the exercises…" ` +
+            `— either reword the prompt or change source_kind to "adapted".`
+        );
+    }
+    if (p.source_kind === 'adapted' && p.prompt && !/adapted from/i.test(p.prompt)) {
+        flags.push(
+            `practice ${p.id}: source_kind="adapted" but prompt doesn't say "Adapted from…" ` +
+            `— make the provenance explicit to the user.`
+        );
+    }
     if (p.starterCode && !p.starterCode.includes('sorry')) {
-        // Not a hard fail — but warn so authors get a `sorry` placeholder.
         flags.push(
             `practice ${p.id}: starterCode has no \`sorry\` — exercise should leave a hole for the user.`
         );

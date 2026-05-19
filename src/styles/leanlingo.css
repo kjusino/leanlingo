@@ -1247,6 +1247,12 @@ button {
 .ll-practice-intro {
     margin-bottom: 14px;
 }
+.ll-practice-pill-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 10px;
+}
 .ll-practice-pill {
     display: inline-block;
     font-family: 'JetBrains Mono', 'Fira Code', 'Menlo', monospace;
@@ -1258,7 +1264,16 @@ button {
     background: var(--c-soft);
     color: var(--c-text);
     border: 1px solid color-mix(in oklab, var(--c) 45%, transparent);
-    margin-bottom: 10px;
+}
+.ll-practice-pill.provenance.book_exercise {
+    background: color-mix(in oklab, var(--green) 18%, var(--surface-2));
+    color: color-mix(in oklab, var(--green) 70%, var(--text-1));
+    border-color: color-mix(in oklab, var(--green) 45%, transparent);
+}
+.ll-practice-pill.provenance.adapted {
+    background: color-mix(in oklab, var(--gold) 18%, var(--surface-2));
+    color: color-mix(in oklab, var(--gold) 75%, var(--text-1));
+    border-color: color-mix(in oklab, var(--gold) 45%, transparent);
 }
 .ll-practice-prompt {
     margin: 0;

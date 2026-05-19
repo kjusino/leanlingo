@@ -53,4 +53,11 @@ export type Practice = {
     starterCode: string;
     book_ref: string;
     source_url: string;
+    /**
+     * "book_exercise" — verbatim or near-verbatim from the book's Exercises section.
+     * "adapted"       — the chapter has no formal Exercises; the practice was
+     *                   written to mirror the chapter's worked examples.
+     * The audit refuses to ship without this declaration.
+     */
+    source_kind: 'book_exercise' | 'adapted';
 };

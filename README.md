@@ -86,7 +86,7 @@ Per-user progress is persisted to `localStorage` under three keys — `leanlingo
 
 ## Practice exercises
 
-Each chapter ends with an optional **Code in Lean 4** card. Each card pairs a short book-aligned exercise with starter code; one click copies the code to the clipboard, the next opens the official [Lean Web Editor](https://live.lean-lang.org) — which runs Lean as WebAssembly entirely client-side — where the user pastes and writes the solution against Lean's real goal and error panels.
+Each chapter ends with an optional **Code in Lean 4** card. Each card pairs a short Lean exercise with starter code; one click copies the code to the clipboard, the next opens the official [Lean Web Editor](https://live.lean-lang.org) — which runs Lean as WebAssembly entirely client-side — where the user pastes and writes the solution against Lean's real goal and error panels.
 
 Practice exercises live in [`src/data/practice.json`](src/data/practice.json) — one entry per world, schema:
 
@@ -94,13 +94,26 @@ Practice exercises live in [`src/data/practice.json`](src/data/practice.json) �
 {
   "id": "w1-practice",
   "world": "w1",
-  "title": "joinStringsWith and volume",
-  "prompt": "...",
-  "starterCode": "def ... := sorry",
-  "book_ref": "FPIL §1.3",
-  "source_url": "https://lean-lang.org/..."
+  "title": "joinStringsWith, type of partial, volume",
+  "prompt": "From the exercises in FPIL §1.3 (Functions and Definitions): …",
+  "starterCode": "def joinStringsWith … := sorry",
+  "book_ref": "FPIL4 §1.3",
+  "source_url": "https://lean-lang.org/functional_programming_in_lean/Getting-to-Know-Lean/Functions-and-Definitions/",
+  "source_kind": "book_exercise"
 }
 ```
+
+**`source_kind` is mandatory**, and the audit refuses to ship without it:
+
+- `"book_exercise"` — verbatim or near-verbatim from the book's Exercises section. The UI shows a green **FROM THE BOOK** pill. Prompts must start with "From the exercises in …".
+- `"adapted"` — the chapter has no formal Exercises section (true for TPIL Ch. 2, 6, 9, 10, 11, 12 and FPIL Hello World). The practice mirrors a worked example in the chapter. The UI shows a gold **ADAPTED** pill, and prompts must start with "Adapted from …".
+
+Of the 20 seed practices, 13 are `book_exercise` (sourced from the master branch of [`leanprover/fp-lean`](https://github.com/leanprover/fp-lean) and [`leanprover/theorem_proving_in_lean4`](https://github.com/leanprover/theorem_proving_in_lean4)) and 7 are `adapted` for chapters that have no formal exercise section.
+
+The audit also enforces:
+- Every `source_url` must already appear in `questions.json` (the question corpus is the source of truth for known-resolving URLs).
+- `starterCode` must contain a `sorry` placeholder.
+- No duplicate IDs or worlds.
 
 Marking a practice exercise as done awards +25 XP the first time and bumps the streak (same as any other lesson completion). Practice doesn't count toward a chapter's completion percentage — it's optional.
 
