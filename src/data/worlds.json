@@ -11,5 +11,12 @@
   { "id": "w10", "title": "Monads",                               "blurb": "Sequencing effects with do-notation." },
   { "id": "w11", "title": "Inductive Types",                      "blurb": "Defining data, induction principles, recursors." },
   { "id": "w12", "title": "Functors, Applicatives & Monads",      "blurb": "Three layers of structure for effectful code." },
-  { "id": "w13", "title": "Induction & Recursion",                "blurb": "Proving by induction and writing recursive definitions." }
+  { "id": "w13", "title": "Induction & Recursion",                "blurb": "Proving by induction and writing recursive definitions." },
+  { "id": "w14", "title": "Structures & Records",                 "blurb": "Define record types, inherit, and update with `with`." },
+  { "id": "w15", "title": "Type Classes Deep Dive",               "blurb": "Instance search, Inhabited, Decidable, outParam." },
+  { "id": "w16", "title": "The Conversion Tactic",                "blurb": "Surgical rewriting inside the goal with `conv`." },
+  { "id": "w17", "title": "Axioms & Computation",                 "blurb": "propext, funext, choice, quotients — and what blocks reduction." },
+  { "id": "w18", "title": "Monad Transformers",                   "blurb": "StateT, ExceptT, ReaderT and how to combine effects." },
+  { "id": "w19", "title": "Programming with Dependent Types",     "blurb": "Indexed families, Fin, dependent matches, universe levels." },
+  { "id": "w20", "title": "Proving & Performance",                "blurb": "Tail recursion, well-founded recursion, arrays and ST." }
 ]
