@@ -64,11 +64,7 @@ export default function UnitPath() {
     return (
         <div
             className="ll-page ll-unit-path-page"
-            style={{
-                ['--c' as string]: c.base,
-                ['--c-soft' as string]: c.soft,
-                ['--c-text' as string]: c.text,
-            }}
+            style={{ ['--world-hue' as string]: String(c.hue) }}
         >
             <PathHeader
                 title={`Chapter ${wn} · Unit ${un}`}

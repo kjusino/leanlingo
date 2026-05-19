@@ -39,11 +39,7 @@ export default function LessonPage() {
     return (
         <div
             className="ll-page ll-lesson-page"
-            style={{
-                ['--c' as string]: c.base,
-                ['--c-soft' as string]: c.soft,
-                ['--c-text' as string]: c.text,
-            }}
+            style={{ ['--world-hue' as string]: String(c.hue) }}
         >
             <header className="ll-subheader accented">
                 <button

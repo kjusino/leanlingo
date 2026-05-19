@@ -1,5 +1,6 @@
-// One accent hue per world. 20 distinct, well-spaced HSL values that read
-// clearly on the dark background. Index follows world number (1-based).
+// One accent hue per world. 20 distinct, well-spaced HSL hues; the
+// saturation/lightness wrapped around the hue is theme-aware and lives
+// in CSS — see the `--world-hue` formulas in leanlingo.css.
 const HUES: number[] = [
     200, // w1  blue
     260, // w2  indigo
@@ -23,19 +24,10 @@ const HUES: number[] = [
     100, // w20 olive
 ];
 
-export type WorldColor = {
-    base: string;   // bright accent — for borders, completed fill, focused rings
-    soft: string;   // dim background tint — for available-state fill
-    text: string;   // on-base readable label
-};
+export type WorldColor = { hue: number };
 
 export function worldColor(worldId: string): WorldColor {
     const m = worldId.match(/^w(\d+)/);
     const n = m ? Number(m[1]) : 1;
-    const hue = HUES[(n - 1) % HUES.length];
-    return {
-        base: `hsl(${hue} 75% 60%)`,
-        soft: `hsl(${hue} 55% 22%)`,
-        text: `hsl(${hue} 90% 92%)`,
-    };
+    return { hue: HUES[(n - 1) % HUES.length] };
 }

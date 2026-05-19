@@ -46,11 +46,7 @@ export default function UnitsList() {
     return (
         <div
             className="ll-page"
-            style={{
-                ['--c' as string]: c.base,
-                ['--c-soft' as string]: c.soft,
-                ['--c-text' as string]: c.text,
-            }}
+            style={{ ['--world-hue' as string]: String(c.hue) }}
         >
             <SubHeader
                 title={`Chapter ${wn}`}

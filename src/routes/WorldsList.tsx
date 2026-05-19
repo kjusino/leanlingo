@@ -69,11 +69,7 @@ function WorldCard({ world, completed }: { world: World; completed: Set<string> 
         <button
             className={`ll-world-card ${allDone ? 'done' : ''}`}
             onClick={() => navigate(`/w/${world.id}`)}
-            style={{
-                ['--c' as string]: c.base,
-                ['--c-soft' as string]: c.soft,
-                ['--c-text' as string]: c.text,
-            }}
+            style={{ ['--world-hue' as string]: String(c.hue) }}
         >
             <div className="ll-world-card-badge">
                 <span className="ll-world-card-num">{wn}</span>
