@@ -50,7 +50,7 @@ export default function LessonRunner({ lesson, onFinished, onNextLesson }: Props
                         </button>
                     )}
                     <button className="leanlingo-btn secondary" onClick={onFinished}>
-                        Back to chapter index
+                        Back to trail
                     </button>
                 </div>
             </div>

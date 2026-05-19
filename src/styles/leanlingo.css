@@ -21,10 +21,13 @@ a {
 a:hover { text-decoration: underline; }
 
 .leanlingo {
-    max-width: 520px;
+    max-width: 480px;
     margin: 0 auto;
-    padding: 16px;
+    padding: 16px 12px 48px;
     color: #e5e7eb;
+}
+.leanlingo.trail-page {
+    max-width: 440px;
 }
 
 .leanlingo-header {
@@ -429,3 +432,184 @@ a:hover { text-decoration: underline; }
     border-top: 1px solid #1e293b;
     text-align: center;
 }
+
+/* ---------- Trail page ---------- */
+
+.trail-top {
+    text-align: center;
+    margin: 4px 0 20px;
+}
+.trail-top .leanlingo-wordmark {
+    display: inline-block;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+.trail-sub {
+    margin-top: 4px;
+    font-size: 12px;
+    color: #64748b;
+    letter-spacing: 0.2px;
+}
+
+.trail {
+    position: relative;
+    padding: 8px 0 24px;
+}
+/* Center dotted spine that the circles zig-zag across. */
+.trail::before {
+    content: '';
+    position: absolute;
+    top: 8px;
+    bottom: 8px;
+    left: 50%;
+    width: 0;
+    border-left: 2px dashed rgba(148, 163, 184, 0.18);
+    pointer-events: none;
+}
+
+.trail-section {
+    position: relative;
+}
+
+.trail-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 14px 0;
+    position: relative;
+}
+.trail-row.left  { justify-content: flex-start; }
+.trail-row.right { justify-content: flex-end; }
+
+/* The clickable node = circle + label below. */
+.trail-node {
+    background: transparent;
+    border: 0;
+    padding: 0;
+    cursor: pointer;
+    font-family: inherit;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    width: 46%;
+    min-width: 0;
+    text-align: center;
+}
+.trail-node:focus-visible {
+    outline: 2px solid var(--c, #22d3ee);
+    outline-offset: 6px;
+    border-radius: 12px;
+}
+
+.trail-circle {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: var(--c-soft, #1e293b);
+    border: 3px solid var(--c, #475569);
+    color: var(--c-text, #e5e7eb);
+    font-weight: 700;
+    line-height: 1;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.35);
+    transition: transform 120ms ease, box-shadow 120ms ease;
+    flex-shrink: 0;
+}
+.trail-node:hover .trail-circle {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 22px rgba(0,0,0,0.45);
+}
+.trail-node:active .trail-circle {
+    transform: translateY(0);
+}
+.trail-circle.complete {
+    background: var(--c, #22d3ee);
+    color: #0b1220;
+}
+.trail-circle-num {
+    font-size: inherit;
+}
+
+.size-world  { width: 72px; height: 72px; font-size: 24px; }
+.size-unit   { width: 56px; height: 56px; font-size: 18px; }
+.size-lesson { width: 44px; height: 44px; font-size: 15px; }
+
+.trail-label {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    max-width: 100%;
+}
+.trail-label-title {
+    font-size: 13px;
+    font-weight: 600;
+    color: #e5e7eb;
+    line-height: 1.25;
+    overflow-wrap: anywhere;
+}
+.trail-label-meta {
+    font-size: 11px;
+    color: #64748b;
+    letter-spacing: 0.2px;
+}
+
+/* Open state — light accent halo around the parent node. */
+.world-row.open .trail-circle,
+.unit-row.open .trail-circle {
+    box-shadow:
+        0 0 0 4px color-mix(in oklab, var(--c, #22d3ee) 25%, transparent),
+        0 6px 18px rgba(0,0,0,0.4);
+}
+.world-row.open .trail-label-title,
+.unit-row.open  .trail-label-title {
+    color: var(--c-text, #e5e7eb);
+}
+
+/* The fanned-out subtree gets its own narrower spine, tinted with the
+   active world's soft color so the nesting is visually obvious. */
+.trail-sub-spine {
+    position: relative;
+    margin: 4px 0 10px;
+    padding: 4px 0 8px;
+    background: linear-gradient(
+        180deg,
+        color-mix(in oklab, var(--c-soft, #1e293b) 28%, transparent) 0%,
+        transparent 100%
+    );
+    border-radius: 18px;
+}
+.trail-sub-spine::before {
+    content: '';
+    position: absolute;
+    top: 4px; bottom: 4px;
+    left: 50%;
+    width: 0;
+    border-left: 2px dashed color-mix(in oklab, var(--c, #22d3ee) 35%, transparent);
+    pointer-events: none;
+}
+.trail-sub-spine.inner {
+    margin: 2px 6% 8px;
+}
+
+/* Unit/lesson rows take a tighter rhythm than world rows. */
+.trail-sub-spine .trail-row { padding: 10px 0; }
+.trail-sub-spine .trail-sub-spine .trail-row { padding: 8px 0; }
+
+/* Lesson circles inherit the active world's color. */
+.trail-sub-spine .trail-circle {
+    border-color: var(--c, #475569);
+    background: var(--c-soft, #1e293b);
+    color: var(--c-text, #e5e7eb);
+}
+.trail-sub-spine .trail-circle.complete {
+    background: var(--c, #22d3ee);
+    color: #0b1220;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .trail-circle { transition: none; }
+    .trail-node:hover .trail-circle { transform: none; }
+}
+

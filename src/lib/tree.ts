@@ -20,12 +20,8 @@ export function lessonNumber(id: string): number {
     return num(id, 'l');
 }
 
-function lessonId(w: string, u: string, l: string): string {
-    return `${w}-${u}-${l}`;
-}
-function unitId(w: string, u: string): string {
-    return `${w}-${u}`;
-}
+// q.unit and q.lesson in the data already carry their world/unit prefix
+// (e.g. q.unit = "w1-u1", q.lesson = "w1-u1-l1"), so we use them verbatim.
 
 let cached: QuestionTree | null = null;
 
@@ -42,16 +38,14 @@ export function getTree(): QuestionTree {
             w = { id: q.world, title: titleByWorld.get(q.world) ?? q.world, units: [] };
             worldsMap.set(q.world, w);
         }
-        const uId = unitId(q.world, q.unit);
-        let u = w.units.find((x) => x.id === uId);
+        let u = w.units.find((x) => x.id === q.unit);
         if (!u) {
-            u = { id: uId, lessons: [] };
+            u = { id: q.unit, lessons: [] };
             w.units.push(u);
         }
-        const lId = lessonId(q.world, q.unit, q.lesson);
-        let l = u.lessons.find((x) => x.id === lId);
+        let l = u.lessons.find((x) => x.id === q.lesson);
         if (!l) {
-            l = { id: lId, title: q.lesson_title || lId, book_ref: q.book_ref || '', questions: [] };
+            l = { id: q.lesson, title: q.lesson_title || q.lesson, book_ref: q.book_ref || '', questions: [] };
             u.lessons.push(l);
         }
         l.questions.push(q);
