@@ -75,47 +75,57 @@ export default function UnitPath() {
             />
 
             <div className="ll-path">
-                {unit.lessons.map((lesson, i) => {
-                    const isDone = completed.has(lesson.id);
-                    const isCurrent = lesson.id === currentLessonId;
-                    const kind: NodeKind = isDone
-                        ? 'done'
-                        : isCurrent
-                        ? 'current'
-                        : 'available';
+                {(() => {
+                    // Zigzag the lessons only when the unit has enough nodes
+                    // for the S-curve to read as one. With ≤ 3 lessons it just
+                    // looks like a single misplaced button — keep those vertical.
+                    const useZigzag = unit.lessons.length >= 4;
                     return (
-                        <PathNode
-                            key={lesson.id}
-                            index={i}
-                            total={unit.lessons.length + 1}
-                            kind={kind}
-                            label={lesson.title}
-                            metaLabel={`Lesson ${lessonNumber(lesson.id)} · ${lesson.questions.length}q`}
-                            badge={
-                                isDone ? '✓' : String(lessonNumber(lesson.id))
-                            }
-                            onClick={() => {
-                                const [, uShort] = unit.id.split('-');
-                                const [, , lShort] = lesson.id.split('-');
-                                navigate(
-                                    `/w/${world.id}/u/${uShort}/l/${lShort}`
+                        <>
+                            {unit.lessons.map((lesson, i) => {
+                                const isDone = completed.has(lesson.id);
+                                const isCurrent = lesson.id === currentLessonId;
+                                const kind: NodeKind = isDone
+                                    ? 'done'
+                                    : isCurrent
+                                    ? 'current'
+                                    : 'available';
+                                return (
+                                    <PathNode
+                                        key={lesson.id}
+                                        index={i}
+                                        useZigzag={useZigzag}
+                                        kind={kind}
+                                        label={lesson.title}
+                                        metaLabel={`Lesson ${lessonNumber(lesson.id)} · ${lesson.questions.length}q`}
+                                        badge={
+                                            isDone ? '✓' : String(lessonNumber(lesson.id))
+                                        }
+                                        onClick={() => {
+                                            const [, uShort] = unit.id.split('-');
+                                            const [, , lShort] = lesson.id.split('-');
+                                            navigate(
+                                                `/w/${world.id}/u/${uShort}/l/${lShort}`
+                                            );
+                                        }}
+                                        nodeRef={isCurrent ? currentRef : undefined}
+                                    />
                                 );
-                            }}
-                            nodeRef={isCurrent ? currentRef : undefined}
-                        />
-                    );
-                })}
+                            })}
 
-                {/* End-of-unit trophy */}
-                <PathNode
-                    index={unit.lessons.length}
-                    total={unit.lessons.length + 1}
-                    kind={'trophy'}
-                    label=""
-                    metaLabel=""
-                    badge="🏆"
-                    nonInteractive
-                />
+                            {/* End-of-unit trophy */}
+                            <PathNode
+                                index={unit.lessons.length}
+                                useZigzag={useZigzag}
+                                kind={'trophy'}
+                                label=""
+                                metaLabel=""
+                                badge="🏆"
+                                nonInteractive
+                            />
+                        </>
+                    );
+                })()}
             </div>
 
             {next ? (
@@ -187,7 +197,7 @@ function PathHeader({
 
 function PathNode({
     index,
-    total,
+    useZigzag,
     kind,
     label,
     metaLabel,
@@ -197,7 +207,7 @@ function PathNode({
     nodeRef,
 }: {
     index: number;
-    total: number;
+    useZigzag: boolean;
     kind: NodeKind;
     label: string;
     metaLabel: string;
@@ -206,26 +216,26 @@ function PathNode({
     nonInteractive?: boolean;
     nodeRef?: React.RefObject<HTMLDivElement | null>;
 }) {
-    // Zigzag: sine-wave horizontal position centred on the column.
-    // Amplitude scales by how many nodes — small units stay near centre,
-    // longer units swing further so the path feels organic.
-    // Sine-wave zigzag, % of row width. Capped so an 80px button + label
-    // stays inside the 448px content column at the swing peaks.
-    const amp = Math.min(26, 14 + total * 1.4);
-    const phase = index * 0.85;
-    const offsetPct = Math.sin(phase) * amp;
+    // Zigzag amplitude in *pixels*, applied to the inner node (not the full-width
+    // row) so the row's bounding box stays inside the content column — the row
+    // can't push horizontal scroll on the page. The cap (95px) keeps an 80px
+    // button + a 160px-wide label visually inside the 448px column at peak swing.
+    const MAX_AMP_PX = 95;
+    const offsetPx = useZigzag ? Math.sin(index * 0.85) * MAX_AMP_PX : 0;
 
     const isCurrent = kind === 'current';
 
     return (
-        <div
-            className="ll-path-node-row"
-            ref={nodeRef as React.RefObject<HTMLDivElement>}
-            style={{
-                transform: `translateX(${offsetPct}%)`,
-            }}
-        >
-            <div className={`ll-path-node kind-${kind}`}>
+        <div className="ll-path-node-row">
+            <div
+                className={`ll-path-node kind-${kind}`}
+                ref={nodeRef as React.RefObject<HTMLDivElement>}
+                style={
+                    offsetPx
+                        ? { transform: `translateX(${offsetPx}px)` }
+                        : undefined
+                }
+            >
                 {isCurrent && (
                     <div className="ll-path-pop">
                         <span className="ll-path-pop-text">START</span>

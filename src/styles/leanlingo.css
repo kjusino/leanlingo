@@ -104,6 +104,14 @@ button {
     padding: 12px 16px 96px;
     min-height: 100dvh;
     box-sizing: border-box;
+    /* Hard guard against any descendant (e.g. a zig-zag path node at full
+       swing) growing the page wider than the column and triggering
+       document-level horizontal scroll. `clip` is preferred where available;
+       `hidden` is the safe fallback. */
+    overflow-x: clip;
+}
+@supports not (overflow: clip) {
+    .ll-page { overflow-x: hidden; }
 }
 
 /* ============================================================
@@ -487,8 +495,6 @@ button {
     display: flex;
     justify-content: center;
     padding: 8px 0;
-    will-change: transform;
-    transition: transform 0.25s ease;
 }
 
 .ll-path-node {
@@ -497,6 +503,10 @@ button {
     flex-direction: column;
     align-items: center;
     gap: 8px;
+    /* Pixel-based zig-zag transform is applied here (not on the row),
+       so the row's bounding box stays inside the column. */
+    will-change: transform;
+    transition: transform 0.25s ease;
 }
 
 /* The "START" / "current" callout above the active button. */
@@ -1013,7 +1023,7 @@ button {
 @media (prefers-reduced-motion: reduce) {
     .ll-path-pop { animation: none; }
     .ll-summary-burst { animation: none; }
-    .ll-path-node-row { transition: none; }
+    .ll-path-node { transition: none; }
 }
 
 /* ============================================================
