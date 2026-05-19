@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react';
 import QuestionCard, { Outcome } from './QuestionCard';
+import Confetti from './Confetti';
 import {
     getXP,
     isLessonComplete,
@@ -82,6 +83,8 @@ export default function LessonRunner({ lesson, onFinished }: Props) {
 
         return (
             <div className="ll-summary">
+                {/* Celebrate first-time completions; skip replays (no fresh XP). */}
+                <Confetti fire={!wasReplay} />
                 <div className="ll-summary-burst">{perfect ? '🌟' : '🏆'}</div>
                 <div className="ll-summary-title">Lesson complete</div>
                 <div className="ll-summary-sub">{lesson.title}</div>

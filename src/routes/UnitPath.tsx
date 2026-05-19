@@ -9,7 +9,12 @@ import {
     worldNumber,
 } from '../lib/tree';
 import { worldColor } from '../lib/worldColor';
-import { getCompletedLessons } from '../lib/progress';
+import {
+    getCompletedLessons,
+    isUnitCelebrated,
+    markUnitCelebrated,
+} from '../lib/progress';
+import Confetti from '../components/Confetti';
 import type { Unit, World } from '../types';
 
 type NodeKind = 'done' | 'current' | 'available' | 'trophy';
@@ -61,11 +66,31 @@ export default function UnitPath() {
         if (el) el.scrollIntoView({ block: 'center', behavior: 'smooth' });
     }, [currentLessonId]);
 
+    // First-time unit completion: fire confetti and mark this unit so we
+    // don't celebrate again on subsequent visits. Re-checked whenever
+    // `completed` updates so that landing here straight from finishing the
+    // last lesson still triggers the burst.
+    const [unitConfetti, setUnitConfetti] = useState(false);
+    useEffect(() => {
+        if (unit.lessons.length === 0) return;
+        const allDone = unit.lessons.every((l) => completed.has(l.id));
+        if (allDone && !isUnitCelebrated(unit.id)) {
+            markUnitCelebrated(unit.id);
+            setUnitConfetti(true);
+            // Auto-clear the trigger so a re-render (e.g. theme toggle)
+            // doesn't re-fire — the Confetti component only fires when
+            // `fire` becomes truthy.
+            const t = window.setTimeout(() => setUnitConfetti(false), 3000);
+            return () => window.clearTimeout(t);
+        }
+    }, [unit, completed]);
+
     return (
         <div
             className="ll-page ll-unit-path-page"
             style={{ ['--world-hue' as string]: String(c.hue) }}
         >
+            <Confetti fire={unitConfetti} count={180} duration={2800} />
             <PathHeader
                 title={`Chapter ${wn} · Unit ${un}`}
                 subtitle={world.title}

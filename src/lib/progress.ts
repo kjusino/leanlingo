@@ -11,6 +11,7 @@
 const KEY_LESSONS = 'leanlingo:completed:lessons';
 const KEY_XP = 'leanlingo:xp';
 const KEY_STREAK = 'leanlingo:streak';
+const KEY_CELEBRATED_UNITS = 'leanlingo:celebrated:units';
 
 /** Components subscribe to this event to refresh derived UI (XP, level, streak). */
 export const PROGRESS_EVENT = 'leanlingo:progress';
@@ -150,6 +151,25 @@ export function getDisplayStreak(): number {
  * Records that the user completed *something* today. Same-day calls are
  * idempotent. Returns the resulting streak.
  */
+// ─── Unit-completion celebration (confetti) ──────────────────────────
+// We celebrate each unit's 100%-completion exactly once. The flag lives
+// in its own key so clearing only this doesn't reset XP / streak / lessons.
+
+export function isUnitCelebrated(unitId: string): boolean {
+    const arr = readJSON<unknown>(KEY_CELEBRATED_UNITS, []);
+    return Array.isArray(arr) && arr.includes(unitId);
+}
+
+/** Returns true if this is the first time the unit is being marked celebrated. */
+export function markUnitCelebrated(unitId: string): boolean {
+    const arr = readJSON<unknown>(KEY_CELEBRATED_UNITS, []);
+    const set = new Set(Array.isArray(arr) ? (arr.filter((x) => typeof x === 'string') as string[]) : []);
+    if (set.has(unitId)) return false;
+    set.add(unitId);
+    writeJSON(KEY_CELEBRATED_UNITS, [...set]);
+    return true;
+}
+
 export function bumpStreakForToday(): Streak {
     const s = getStreak();
     const today = localISODate();

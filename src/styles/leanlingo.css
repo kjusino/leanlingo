@@ -1027,6 +1027,21 @@ button {
 }
 
 /* ============================================================
+   Confetti overlay — full-viewport canvas, click-through,
+   sits above sticky headers and the theme toggle. Component
+   manages its own clear/redraw lifecycle.
+   ============================================================ */
+
+.ll-confetti {
+    position: fixed;
+    inset: 0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+    z-index: 1000;
+}
+
+/* ============================================================
    Theme toggle — fixed at the top-right of the viewport so it sits
    in the "header bar" zone of every screen (home, sub-pages, lesson).
    ============================================================ */
