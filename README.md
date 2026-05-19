@@ -4,10 +4,11 @@ Open Lean 4 flashcard trainer. Practice from the official Lean books anywhere �
 
 **Live at:** [leanlingo.org](https://leanlingo.org)
 
-- No accounts, no streaks, no tracking — every world is open, jump anywhere
-- 13 worlds, 112 lessons, 304+ questions
+- No accounts, no streaks, no tracking — every chapter is open, jump anywhere
+- 20 chapters, 67 units, 149 lessons, 405 questions
 - Drawn from [Theorem Proving in Lean 4](https://lean-lang.org/theorem_proving_in_lean4/) and [Functional Programming in Lean](https://lean-lang.org/functional_programming_in_lean/)
 - Pure static SPA — questions ship in the build, no backend, works offline after first load
+- Mobile-first three-screen navigation: chapter list → unit list → zig-zag lesson path → lesson runner
 
 ## Run locally
 
@@ -50,33 +51,49 @@ If you use a custom domain, point its DNS at GitHub:
 
 GitHub auto-issues a free Let's Encrypt cert once DNS resolves.
 
+## Navigation model
+
+Each curriculum row in `questions.json` belongs to a `world` → `unit` → `lesson`. That same hierarchy drives the four URL patterns:
+
+| URL | Screen |
+|---|---|
+| `/` | Chapter list (one card per world, with progress) |
+| `/w/:worldId` | Unit list inside a chapter |
+| `/w/:worldId/u/:unitId` | Zig-zag path of lesson buttons in a unit |
+| `/w/:worldId/u/:unitId/l/:lessonId` | Lesson runner (one question at a time) |
+| `/about` | About + attribution |
+
+Completed lesson IDs are persisted to `localStorage` under `leanlingo:completed:lessons`. There is no server, no account, nothing to sign up for.
+
 ## Project layout
 
 ```
 src/
   main.tsx              entry
-  App.tsx               router
+  App.tsx               router (5 routes)
   routes/               top-level pages
-    ChapterIndex.tsx    open chapter index (homepage)
-    WorldPage.tsx       unit + lesson list
-    LessonPage.tsx      lesson runner
-    About.tsx           about + attribution
+    WorldsList.tsx      / — chapter grid (homepage)
+    UnitsList.tsx       /w/:worldId — units inside a chapter
+    UnitPath.tsx        /w/:worldId/u/:unitId — Duolingo-style zig-zag path
+    LessonPage.tsx      /w/:worldId/u/:unitId/l/:lessonId — lesson runner
+    About.tsx           /about — about + attribution
   components/
-    Header.tsx
     QuestionCard.tsx    renders one question (MC / FIB / PO / SE / ORD)
-    LessonRunner.tsx    walks through questions in a lesson
+    LessonRunner.tsx    walks through questions in a lesson, shows summary
     LeanCode.tsx        small in-house Lean syntax highlighter
   data/
-    questions.json      ← the curriculum
-    worlds.json         ← world titles + blurbs
+    questions.json      ← the curriculum (one row per question)
+    worlds.json         ← chapter titles + blurbs
   lib/
     tree.ts             builds World→Unit→Lesson tree from flat questions
+    progress.ts         localStorage-backed completed-lessons set
+    worldColor.ts       one HSL accent hue per chapter
   styles/
-    leanlingo.css
+    leanlingo.css       all styling (no framework, no UI library)
 scripts/
   audit.ts              answerability audit (run in CI)
 .github/workflows/
-  deploy.yml            CI: lint, audit, build, deploy to GitHub Pages
+  deploy.yml            CI: audit, typecheck, build, deploy to GitHub Pages
 ```
 
 ## Tech
