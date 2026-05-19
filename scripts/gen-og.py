@@ -120,7 +120,10 @@ def main():
 
     # 2. Wordmark L∃∀nLingo in the gradient.
     wordmark_font = ImageFont.truetype(FONT_BOLD, 150)
-    word = gradient_text("L∃∀nLingo", wordmark_font)
+    # "LEAN" all-caps (with the quantifier substitutions for E and A) matches
+    # the official lean-lang.org wordmark; "Lingo" stays camelCase as the
+    # LeanLingo identity.
+    word = gradient_text("L∃∀NLingo", wordmark_font)
     wx = (W - word.width) // 2
     wy = chip_y + chip_size + 32
     img.paste(word, (wx, wy), word)

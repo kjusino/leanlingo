@@ -28,7 +28,7 @@ export default function WorldsList() {
                     <span aria-hidden="true">L</span>
                     <span aria-hidden="true" className="ll-glyph-quant">∃</span>
                     <span aria-hidden="true" className="ll-glyph-quant">∀</span>
-                    <span aria-hidden="true">nLingo</span>
+                    <span aria-hidden="true">NLingo</span>
                 </h1>
                 <div className="ll-home-type">
                     <span className="ll-mono-dim">:</span>{' '}
