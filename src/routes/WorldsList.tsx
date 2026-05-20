@@ -49,6 +49,16 @@ export default function WorldsList() {
 
             <footer className="ll-home-footer">
                 <Link to="/about" className="ll-text-link">About LeanLingo →</Link>
+                <div className="ll-home-credit">
+                    <a
+                        href="https://KennethJusino.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ll-text-link"
+                    >
+                        Made with ❤️ in 🇩🇴
+                    </a>
+                </div>
             </footer>
         </div>
     );
