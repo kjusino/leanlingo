@@ -51,6 +51,16 @@ export default function WorldsList() {
                 <Link to="/about" className="ll-text-link">About LeanLingo →</Link>
                 <div className="ll-home-credit">
                     <a
+                        href="https://leanprover.zulipchat.com"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="ll-text-link"
+                    >
+                        Join the Lean Zulip →
+                    </a>
+                </div>
+                <div className="ll-home-credit">
+                    <a
                         href="https://KennethJusino.com"
                         target="_blank"
                         rel="noopener noreferrer"
