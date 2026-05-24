@@ -2706,7 +2706,10 @@
     "prompt": "What type does #check Nat → Nat report?",
     "code": "#check Nat → Nat",
     "options": [],
-    "answer": "Type",
+    "answer": [
+      "Type",
+      "Type 0"
+    ],
     "explanation": "Nat → Nat is itself a type, living in Type 0.",
     "ord_items": [],
     "book_ref": "TPIL4 Ch. 2",
@@ -2724,7 +2727,10 @@
     "prompt": "What type does #check Nat × Bool report?",
     "code": "#check Nat × Bool",
     "options": [],
-    "answer": "Type",
+    "answer": [
+      "Type",
+      "Type 0"
+    ],
     "explanation": "Cartesian products of types in Type are themselves in Type.",
     "ord_items": [],
     "book_ref": "TPIL4 Ch. 2",
@@ -4433,7 +4439,10 @@
     "prompt": "A mutable-style counter in pure Lean uses a(n) ___ parameter threaded through each recursive call.",
     "code": "",
     "options": [],
-    "answer": "accumulator",
+    "answer": [
+      "accumulator",
+      "state"
+    ],
     "explanation": "Also called a state parameter.",
     "ord_items": [],
     "book_ref": "FPIL4 Ch. 2",

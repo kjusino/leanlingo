@@ -11,9 +11,13 @@ type Question = {
     type: 'MC' | 'FIB' | 'PO' | 'SE' | 'ORD';
     prompt: string;
     options: string[];
-    answer: string;
+    answer: string | string[];
     ord_items: string[];
 };
+
+function acceptedAnswers(answer: string | string[]): string[] {
+    return Array.isArray(answer) ? answer : [answer];
+}
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const FILE = path.join(__dirname, '..', 'src', 'data', 'questions.json');
@@ -33,6 +37,10 @@ for (const q of rows) {
     switch (q.type) {
         case 'MC':
         case 'SE': {
+            if (Array.isArray(q.answer)) {
+                flags.push(`${q.id} (${q.type}): answer must be a string, not a list`);
+                break;
+            }
             if (!Array.isArray(q.options) || q.options.length < 2) {
                 flags.push(`${q.id} (${q.type}): needs ≥2 options, has ${q.options?.length ?? 0}`);
             } else if (!q.options.includes(q.answer)) {
@@ -41,6 +49,10 @@ for (const q of rows) {
             break;
         }
         case 'ORD': {
+            if (Array.isArray(q.answer)) {
+                flags.push(`${q.id} (ORD): answer must be a string, not a list`);
+                break;
+            }
             if (!Array.isArray(q.ord_items) || q.ord_items.length < 2) {
                 flags.push(`${q.id} (ORD): needs ≥2 ord_items, has ${q.ord_items?.length ?? 0}`);
             }
@@ -57,10 +69,16 @@ for (const q of rows) {
         }
         case 'FIB':
         case 'PO': {
-            if (!q.answer?.trim()) {
+            const answers = acceptedAnswers(q.answer);
+            if (answers.length === 0 || answers.every((answer) => !answer?.trim())) {
                 flags.push(`${q.id} (${q.type}): empty answer`);
-            } else if (q.answer.length > 60) {
-                flags.push(`${q.id} (${q.type}): answer is ${q.answer.length} chars — likely prose, won't match text input. "${q.answer.slice(0, 40)}…"`);
+            }
+            for (const answer of answers) {
+                if (!answer?.trim()) {
+                    flags.push(`${q.id} (${q.type}): answer list contains an empty value`);
+                } else if (answer.length > 60) {
+                    flags.push(`${q.id} (${q.type}): answer is ${answer.length} chars — likely prose, won't match text input. "${answer.slice(0, 40)}…"`);
+                }
             }
             break;
         }

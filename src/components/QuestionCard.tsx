@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import LeanCode from './LeanCode';
-import type { Question } from '../types';
+import type { Question, QuestionAnswer } from '../types';
 
 export type Outcome = {
     correct: boolean;
@@ -23,12 +23,56 @@ type Props = {
     questionLabel: string;
 };
 
-function normalize(s: string): string {
-    return s.trim().replace(/\s+/g, ' ').toLowerCase();
+const LEAN_ASCII_REPLACEMENTS: Array<[string, string]> = [
+    ['<->', '↔'],
+    ['->', '→'],
+    ['<-', '←'],
+    ['\\forall', '∀'],
+    ['\\exists', '∃'],
+    ['\\to', '→'],
+    ['\\leftarrow', '←'],
+    ['\\leftrightarrow', '↔'],
+    ['\\times', '×'],
+    ['\\and', '∧'],
+    ['\\or', '∨'],
+    ['\\not', '¬'],
+    ['\\neq', '≠'],
+    ['\\le', '≤'],
+    ['\\ge', '≥'],
+    ['\\circ', '∘'],
+    ['\\lambda', 'λ'],
+    ['\\alpha', 'α'],
+    ['\\beta', 'β'],
+    ['\\gamma', 'γ'],
+    ['\\delta', 'δ'],
+    ['\\sigma', 'σ'],
+];
+
+const SPACED_SYMBOLS = /\s*([←→↔⇒×∧∨≠≤≥≈∘])\s*/g;
+
+function normalizeLeanAscii(s: string): string {
+    let normalized = s;
+    for (const [ascii, unicode] of LEAN_ASCII_REPLACEMENTS) {
+        normalized = normalized.split(ascii).join(unicode);
+    }
+    return normalized.replace(SPACED_SYMBOLS, ' $1 ');
 }
 
-function answersMatch(input: string, answer: string): boolean {
-    return normalize(input) === normalize(answer);
+function normalize(s: string): string {
+    return normalizeLeanAscii(s).trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+function acceptedAnswers(answer: QuestionAnswer): string[] {
+    return Array.isArray(answer) ? answer : [answer];
+}
+
+function primaryAnswer(answer: QuestionAnswer): string {
+    return acceptedAnswers(answer)[0] ?? '';
+}
+
+function answersMatch(input: string, answers: string[]): boolean {
+    const normalizedInput = normalize(input);
+    return answers.some((answer) => normalizedInput === normalize(answer));
 }
 
 export default function QuestionCard({
@@ -188,7 +232,7 @@ function MC({
     function pick(opt: string) {
         if (done) return;
         setPicked(opt);
-        const correct = opt === question.answer;
+        const correct = opt === primaryAnswer(question.answer);
         if (!correct) {
             setWrongPicks((s) => new Set(s).add(opt));
             setTimeout(() => setPicked(null), 600);
@@ -200,7 +244,7 @@ function MC({
         <div className="ll-options">
             {question.options.map((opt) => {
                 let cls = 'll-option';
-                if (done && opt === question.answer) cls += ' correct';
+                if (done && opt === primaryAnswer(question.answer)) cls += ' correct';
                 else if (wrongPicks.has(opt)) cls += ' wrong';
                 else if (picked === opt && feedback === 'wrong') cls += ' wrong';
                 return (
@@ -231,7 +275,7 @@ function TextInput({
 
     function submit() {
         if (done || !value.trim()) return;
-        const correct = answersMatch(value, question.answer);
+        const correct = answersMatch(value, acceptedAnswers(question.answer));
         if (!correct) setTimeout(() => setValue(''), 700);
         judge(correct);
     }
@@ -240,7 +284,7 @@ function TextInput({
         <div>
             <input
                 className="ll-input"
-                value={done ? question.answer : value}
+                value={done ? primaryAnswer(question.answer) : value}
                 onChange={(e) => setValue(e.target.value)}
                 onKeyDown={(e) => {
                     if (e.key === 'Enter') submit();
@@ -270,7 +314,9 @@ function Ordering({
     judge: (correct: boolean) => void;
     done: boolean;
 }) {
-    const correctOrder = question.answer.split('|').map((s) => s.trim());
+    const correctOrder = primaryAnswer(question.answer)
+        .split('|')
+        .map((s) => s.trim());
     const [items, setItems] = useState<string[]>(() => question.ord_items.slice());
 
     function move(i: number, dir: -1 | 1) {
