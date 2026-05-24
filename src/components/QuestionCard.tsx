@@ -23,6 +23,13 @@ type Props = {
     questionLabel: string;
 };
 
+function shuffled<T>(items: T[]): T[] {
+    return items
+        .map((item) => ({ item, sortKey: Math.random() }))
+        .sort((a, b) => a.sortKey - b.sortKey)
+        .map(({ item }) => item);
+}
+
 function normalize(s: string): string {
     return s.trim().replace(/\s+/g, ' ').toLowerCase();
 }
@@ -184,6 +191,7 @@ function MC({
 }) {
     const [picked, setPicked] = useState<string | null>(null);
     const [wrongPicks, setWrongPicks] = useState<Set<string>>(new Set());
+    const [shuffledOptions] = useState<string[]>(() => shuffled(question.options));
 
     function pick(opt: string) {
         if (done) return;
@@ -198,7 +206,7 @@ function MC({
 
     return (
         <div className="ll-options">
-            {question.options.map((opt) => {
+            {shuffledOptions.map((opt) => {
                 let cls = 'll-option';
                 if (done && opt === question.answer) cls += ' correct';
                 else if (wrongPicks.has(opt)) cls += ' wrong';
