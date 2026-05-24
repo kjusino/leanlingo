@@ -1,5 +1,7 @@
 export type QuestionType = 'MC' | 'FIB' | 'PO' | 'SE' | 'ORD';
 
+export type QuestionAnswer = string | string[];
+
 export type Question = {
     id: string;
     world: string;
@@ -10,7 +12,7 @@ export type Question = {
     prompt: string;
     code: string;
     options: string[];
-    answer: string;
+    answer: QuestionAnswer;
     explanation: string;
     ord_items: string[];
     book_ref: string;
