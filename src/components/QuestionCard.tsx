@@ -23,8 +23,43 @@ type Props = {
     questionLabel: string;
 };
 
+const LEAN_ASCII_REPLACEMENTS: Array<[string, string]> = [
+    ['<->', '↔'],
+    ['->', '→'],
+    ['<-', '←'],
+    ['\\forall', '∀'],
+    ['\\exists', '∃'],
+    ['\\to', '→'],
+    ['\\leftarrow', '←'],
+    ['\\leftrightarrow', '↔'],
+    ['\\times', '×'],
+    ['\\and', '∧'],
+    ['\\or', '∨'],
+    ['\\not', '¬'],
+    ['\\neq', '≠'],
+    ['\\le', '≤'],
+    ['\\ge', '≥'],
+    ['\\circ', '∘'],
+    ['\\lambda', 'λ'],
+    ['\\alpha', 'α'],
+    ['\\beta', 'β'],
+    ['\\gamma', 'γ'],
+    ['\\delta', 'δ'],
+    ['\\sigma', 'σ'],
+];
+
+const SPACED_SYMBOLS = /\s*([←→↔⇒×∧∨≠≤≥≈∘])\s*/g;
+
+function normalizeLeanAscii(s: string): string {
+    let normalized = s;
+    for (const [ascii, unicode] of LEAN_ASCII_REPLACEMENTS) {
+        normalized = normalized.split(ascii).join(unicode);
+    }
+    return normalized.replace(SPACED_SYMBOLS, ' $1 ');
+}
+
 function normalize(s: string): string {
-    return s.trim().replace(/\s+/g, ' ').toLowerCase();
+    return normalizeLeanAscii(s).trim().replace(/\s+/g, ' ').toLowerCase();
 }
 
 function acceptedAnswers(answer: QuestionAnswer): string[] {
